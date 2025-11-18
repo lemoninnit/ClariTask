@@ -1,0 +1,6 @@
+.header { border-bottom: 1px solid #e5e7eb; background: #fff; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 12px 20px; display:flex; align-items:center; justify-content:space-between; }
+.brand { font-weight: 700; color: #111827; font-size: 18px; }
+.nav { display: inline-flex; gap: 8px; }
+.ghost { padding: 8px 14px; border: 1px solid #e5e7eb; border-radius: 999px; color:#111827; }
+.primary { padding: 8px 14px; border-radius: 999px; background:#3f5d2a; color:#fff; }

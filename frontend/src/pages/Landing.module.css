@@ -1,0 +1,4 @@
+.hero { display:flex; align-items:center; justify-content:center; padding: 80px 20px; }
+.container { text-align:center; }
+.title { font-size: 48px; font-weight: 700; margin: 0 0 8px; }
+.subtitle { color:#6b7280; font-size: 18px; margin: 0; }

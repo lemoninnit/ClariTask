@@ -1,0 +1,10 @@
+:root {
+  font-family: Inter, system-ui, Segoe UI, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; background: #fff; }
+
+a { text-decoration: none; }

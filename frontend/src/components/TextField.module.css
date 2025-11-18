@@ -1,0 +1,13 @@
+.field { display: block; }
+.row { display: flex; justify-content: space-between; align-items: baseline; }
+.label { font-weight: 500; color: #1f2937; }
+.rightAction { font-size: 14px; color: #5f7a4b; cursor: pointer; }
+.input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  outline: none;
+}
+.input:focus { border-color: #5f7a4b; box-shadow: 0 0 0 3px rgba(95,122,75,0.15); }
