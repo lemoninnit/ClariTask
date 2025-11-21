@@ -1,5 +1,3 @@
-
-// LOGIN.JSX
 import React, { useState } from 'react'
 import AuthLayout from '../layouts/AuthLayout'
 import TextField from '../components/TextField'
@@ -51,7 +49,6 @@ export default function Login() {
             placeholder="Enter password" 
             value={password} 
             onChange={(e)=>setPassword(e.target.value)}
-            inputClassName={styles.passwordInput}
             required
           />
           <button 
