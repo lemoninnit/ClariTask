@@ -1,0 +1,7 @@
+.sidebar { border-right:1px solid #e5e7eb; padding:16px; background:#fff; display:flex; flex-direction:column; }
+.brand { font-weight:700; color:#3f5d2a; font-size:20px; margin-bottom:16px; }
+.nav { display:flex; flex-direction:column; gap:8px; }
+.link { padding:10px 12px; border-radius:8px; color:#0f172a; }
+.link:hover { background:#f3f4f6; }
+.bottom { margin-top:auto; }
+.logout { display:block; margin-top:16px; background:#3f5d2a; color:#fff; text-align:center; padding:10px 12px; border-radius:8px; }

@@ -1,0 +1,230 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+
+.calendarCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.monthHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.navBtn {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0f172a;
+  transition: all 0.3s;
+}
+
+.navBtn:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.monthYear {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  text-align: center;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.weekDay {
+  text-align: center;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 12px;
+  padding: 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.dayCell {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  min-height: 120px;
+}
+
+.dayCell:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+  transform: translateY(-4px);
+  background: white;
+}
+
+.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.empty:hover {
+  box-shadow: none;
+  transform: none;
+  border: none;
+}
+
+.dayContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dayNumber {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.dayTasks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.taskBadge {
+  background: #f0f9ff;
+  border-left: 3px solid #3b82f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1e40af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.2s;
+}
+
+.taskBadge:hover {
+  background: #dbeafe;
+}
+
+.moreTask {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+  font-style: italic;
+  padding: 2px 8px;
+}
+
+.legend {
+  display: flex;
+  gap: 32px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 2px solid #f1f5f9;
+  justify-content: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.loadingMsg {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .calendarCard { padding: 16px; }
+  .dayCell { min-height: 100px; padding: 6px; }
+  .dayNumber { font-size: 14px; }
+  .taskBadge { font-size: 10px; }
+  .legend { gap: 16px; flex-direction: column; }
+  .title { font-size: 24px; }
+  .monthYear { font-size: 20px; }
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 12px; }
+  .calendarGrid { gap: 4px; }
+  .dayCell { min-height: 80px; padding: 4px; }
+  .dayNumber { font-size: 12px; }
+  .taskBadge { font-size: 9px; padding: 2px 4px; }
+  .weekDay { font-size: 10px; padding: 8px 0; }
+  .title { font-size: 20px; gap: 8px; }
+  .legend { gap: 12px; }
+  .legendItem { font-size: 12px; }
+}

@@ -1,0 +1,9 @@
+.form { display:flex; flex-direction:column; gap:14px; }
+.passwordField { position: relative; }
+.passwordInput { padding-right: 44px; }
+.togglePassword { position:absolute; right:12px; top:50%; transform: translateY(-50%); background:transparent; border:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b; }
+.togglePassword:hover { color:#0f172a; }
+.submitBtn { margin-top: 4px; }
+.divider { margin:16px 0; color:#6b7280; text-align:center; }
+.signup { margin-top:24px; color:#111827; }
+.signup a { color:#3f5d2a; }

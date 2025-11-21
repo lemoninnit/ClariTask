@@ -1,13 +1,13 @@
-package com.appdev.yin.yang.natividadg6;
+package com.appdev.yin.yang.claritask;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Natividadg6Application {
+public class ClariTaskApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Natividadg6Application.class, args);
-	}
+        SpringApplication.run(ClariTaskApplication.class, args);
+    }
 
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Footer.module.css'
+import { Twitter, Instagram, Youtube, Linkedin } from 'lucide-react'
 
 const columns = [
   {
@@ -40,10 +41,10 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.socialRow}>
-        <a className={styles.social} href="#" aria-label="X">X</a>
-        <a className={styles.social} href="#" aria-label="Instagram">IG</a>
-        <a className={styles.social} href="#" aria-label="YouTube">YT</a>
-        <a className={styles.social} href="#" aria-label="LinkedIn">In</a>
+        <a className={styles.social} href="#" aria-label="Twitter"><Twitter size={16} /></a>
+        <a className={styles.social} href="#" aria-label="Instagram"><Instagram size={16} /></a>
+        <a className={styles.social} href="#" aria-label="YouTube"><Youtube size={16} /></a>
+        <a className={styles.social} href="#" aria-label="LinkedIn"><Linkedin size={16} /></a>
       </div>
       <div className={styles.columns}>
         {columns.map((col) => (

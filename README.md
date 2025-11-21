@@ -1,23 +1,64 @@
-# React + Vite
+# ClariTask – Run Guide
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a full-stack application:
+- Backend: Spring Boot + MySQL (`backend/`)
+- Frontend: React + Vite (`frontend/`)
 
-Currently, two official plugins are available:
+## Prerequisites
+- Node.js 18+
+- Java 17+
+- MySQL Server 8+
+- PowerShell (Windows)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Database Setup
+1. Ensure MySQL Server is running locally.
+2. Verify credentials in `backend/src/main/resources/application.properties`:
+   - `spring.datasource.url=jdbc:mysql://localhost:3306/claritask?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC`
+   - `spring.datasource.username=<your-username>`
+   - `spring.datasource.password=<your-password>`
+   - `spring.jpa.hibernate.ddl-auto=update`
+3. The schema `claritask` and tables will be created automatically on backend start.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-
-## Run app
-
+## Start Backend (Spring Boot)
+In an IDE, run `ClariTaskApplication` (`@SpringBootApplication`). Or from terminal:
 ```
-npm run dev
+cd backend
+./mvnw spring-boot:run
 ```
+- Runs on `http://localhost:8080/`
+- Example endpoints:
+  - `GET http://localhost:8080/api/users`
+  - `POST http://localhost:8080/api/users` (JSON body: `{ "name": "John", "email": "john@example.com", "password": "pass1234", "role": "student" }`)
+
+### Common Issue: Port 8080 in Use
+If startup fails with “Port 8080 was already in use”, stop the process:
+```
+Get-Process -Id (Get-NetTCPConnection -LocalPort 8080 | Select-Object -First 1).OwningProcess | Stop-Process -Force
+```
+Then rerun the backend command.
+
+## Start Frontend (React + Vite)
+```
+cd frontend
+npm install
+npm start
+```
+- Open `http://localhost:5173/`
+- Pages: `/` (Landing), `/signup`, `/login`
+
+## Verify End-to-End
+1. Start backend and frontend.
+2. Create a user via the Signup page.
+3. Check `http://localhost:8080/api/users` to see saved users.
+4. In MySQL Workbench: refresh schemas → `claritask` → `users` table should contain the new row.
+
+## Lint
+Frontend:
+```
+cd frontend
+npm run lint
+```
+
+## Project Structure
+- `backend/` Spring Boot app (package `com.appdev.yin.yang.claritask`)
+- `frontend/` React app with pages, components, and layouts

@@ -1,39 +1,78 @@
+
+// LOGIN.JSX
 import React, { useState } from 'react'
 import AuthLayout from '../layouts/AuthLayout'
 import TextField from '../components/TextField'
-import Checkbox from '../components/Checkbox'
 import Button from '../components/Button'
 import SocialButtons from '../components/SocialButtons'
+import { login } from '../lib/api'
+import { Eye, EyeOff, ArrowRight } from 'lucide-react'
+import styles from './Auth.module.css'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [remember, setRemember] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    // TODO: integrate API
-    alert(`Login submitted: ${email}`)
+    setLoading(true)
+    try {
+      const user = await login(email, password)
+      localStorage.setItem('ct_user', JSON.stringify(user))
+      window.location.href = '/dashboard'
+    } catch {
+      alert('Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
   }
-
-  const rightAction = <a href="#" style={{color:'#5f7a4b'}}>forgot password</a>
 
   return (
     <AuthLayout
       title="Welcome back!"
-      subtitle="Enter your Credentials to access your account"
-      imageUrl="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1400&q=80"
+      subtitle="Enter your credentials to access your account"
+      imageUrl="/wildcat.jpg"
     >
-      <form onSubmit={onSubmit}>
-        <TextField label="Email address" type="email" placeholder="Enter your email" value={email} onChange={(e)=>setEmail(e.target.value)} />
-        <TextField label="Password" type="password" placeholder="Enter password" value={password} onChange={(e)=>setPassword(e.target.value)} rightAction={rightAction} />
-        <Checkbox checked={remember} onChange={(e)=>setRemember(e.target.checked)} label={<span>Remember for 30 days</span>} />
-        <Button type="submit">Login</Button>
+      <form onSubmit={onSubmit} className={styles.form}>
+        <TextField 
+          label="Email address" 
+          type="email" 
+          placeholder="Enter your email" 
+          value={email} 
+          onChange={(e)=>setEmail(e.target.value)}
+          required
+        />
+        <div className={styles.passwordField}>
+          <TextField 
+            label="Password" 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Enter password" 
+            value={password} 
+            onChange={(e)=>setPassword(e.target.value)}
+            inputClassName={styles.passwordInput}
+            required
+          />
+          <button 
+            type="button" 
+            className={styles.togglePassword}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+        <div className={styles.forgotPassword}>
+          <a href="#">Forgot password?</a>
+        </div>
+        <Button type="submit" disabled={loading} className={styles.submitBtn}>
+          {loading ? 'Signing in...' : 'Sign In'} <ArrowRight size={18} />
+        </Button>
       </form>
-      <div style={{margin:'16px 0', color:'#6b7280', textAlign:'center'}}>Or</div>
+      <div className={styles.divider}>Or continue with</div>
       <SocialButtons />
-      <div style={{marginTop:24, color:'#111827'}}>
-        Don't have an account? <a href="/signup" style={{color:'#3f5d2a'}}>Sign Up</a>
+      <div className={styles.signup}>
+        Don't have an account? <a href="/signup">Create one</a>
       </div>
     </AuthLayout>
   )
