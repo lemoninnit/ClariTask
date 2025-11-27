@@ -55,24 +55,20 @@ export default function Signup() {
           onChange={(e)=>setEmail(e.target.value)}
           required
         />
-        <div className={styles.passwordField}>
-          <TextField 
-            label="Password" 
-            type={showPassword ? "text" : "password"} 
-            placeholder="Enter password" 
-            value={password} 
-            onChange={(e)=>setPassword(e.target.value)}
-            inputClassName={styles.passwordInput}
-            required
-          />
-          <button 
-            type="button" 
-            className={styles.togglePassword}
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        </div>
+        <TextField 
+          label="Password" 
+          type={showPassword ? "text" : "password"} 
+          placeholder="Enter password" 
+          value={password} 
+          onChange={(e)=>setPassword(e.target.value)}
+          inputClassName={styles.passwordInput}
+          required
+          suffix={
+            <button type="button" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          }
+        />
         <Checkbox 
           checked={agree} 
           onChange={(e)=>setAgree(e.target.checked)} 

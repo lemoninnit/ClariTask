@@ -24,6 +24,8 @@ export default function Landing() {
           <div className={styles.feature}><div className={styles.fTitle}>Notifications</div><div className={styles.fDesc}>Get notified before deadlines and on new posts.</div></div>
           <div className={styles.feature}><div className={styles.fTitle}>Responsive Design</div><div className={styles.fDesc}>Beautiful on desktops, tablets, and mobile devices.</div></div>
           <div className={styles.feature}><div className={styles.fTitle}>Secure Storage</div><div className={styles.fDesc}>Backed by a reliable database for smooth operations.</div></div>
+          <div className={styles.feature}><div className={styles.fTitle}>Lenon Lee</div><div className={styles.fDesc}>CSIT340.</div></div>
+
         </div>
       </section>
     </SiteLayout>

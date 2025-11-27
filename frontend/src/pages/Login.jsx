@@ -1,3 +1,5 @@
+
+// LOGIN.JSX
 import React, { useState } from 'react'
 import AuthLayout from '../layouts/AuthLayout'
 import TextField from '../components/TextField'
@@ -42,23 +44,20 @@ export default function Login() {
           onChange={(e)=>setEmail(e.target.value)}
           required
         />
-        <div className={styles.passwordField}>
-          <TextField 
-            label="Password" 
-            type={showPassword ? "text" : "password"} 
-            placeholder="Enter password" 
-            value={password} 
-            onChange={(e)=>setPassword(e.target.value)}
-            required
-          />
-          <button 
-            type="button" 
-            className={styles.togglePassword}
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        </div>
+        <TextField 
+          label="Password" 
+          type={showPassword ? "text" : "password"} 
+          placeholder="Enter password" 
+          value={password} 
+          onChange={(e)=>setPassword(e.target.value)}
+          inputClassName={styles.passwordInput}
+          required
+          suffix={
+            <button type="button" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          }
+        />
         <div className={styles.forgotPassword}>
           <a href="#">Forgot password?</a>
         </div>
