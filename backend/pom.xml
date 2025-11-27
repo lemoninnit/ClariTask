@@ -8,7 +8,7 @@
 		<version>3.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.appdev.yin.yang</groupId>
+    <groupId>com.appdevg6.yinandyang</groupId>
     <artifactId>claritask</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
     <name>claritask</name>
@@ -37,6 +37,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
 
 		<dependency>

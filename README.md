@@ -23,7 +23,7 @@ This project is a full-stack application:
 In an IDE, run `ClariTaskApplication` (`@SpringBootApplication`). Or from terminal:
 ```
 cd backend
-./mvnw spring-boot:run
+mvnw spring-boot:run
 ```
 - Runs on `http://localhost:8080/`
 - Example endpoints:

@@ -5,3 +5,7 @@
 .input { width:100%; padding:12px 14px; border:1px solid #e5e7eb; border-radius:10px; outline:none; background:#fff; }
 .input::placeholder { color:#94a3b8; }
 .input:focus { border-color: #3f5d2a; box-shadow: 0 0 0 3px rgba(63,93,42,0.15); }
+.inputWrap { position: relative; }
+.suffix { position:absolute; right:12px; top:50%; transform: translateY(-50%); color:#64748b; display:flex; align-items:center; justify-content:center; }
+.suffix:hover { color:#0f172a; }
+.suffix > button { background:transparent; border:none; padding:0; color:inherit; display:flex; align-items:center; justify-content:center; cursor:pointer; }

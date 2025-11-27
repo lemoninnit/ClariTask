@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ClariTaskApplication",
+            "request": "launch",
+            "mainClass": "com.appdevg6.yinandyang.claritask.ClariTaskApplication",
+            "projectName": "claritask"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

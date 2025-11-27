@@ -5,15 +5,12 @@ import CategoryChip from '../components/CategoryChip'
 import TaskItem from '../components/TaskItem'
 import Button from '../components/Button'
 import styles from './Dashboard.module.css'
-import { createTask } from '../api/tasks'
+import { createTask, getTasks } from '../api/tasks'
 import { getCategories, createCategory } from '../api/categories'
 import { Plus, Calendar, TrendingUp, CheckCircle2, Clock, AlertCircle } from 'lucide-react'
 
 export default function Dashboard() {
-  const [tasks, setTasks] = useState(() => {
-    const stored = JSON.parse(localStorage.getItem('ct_tasks') || '[]')
-    return Array.isArray(stored) ? stored : []
-  })
+  const [tasks, setTasks] = useState([])
   const [title, setTitle] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [status, setStatus] = useState('pending')
@@ -24,7 +21,15 @@ export default function Dashboard() {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('ct_user') || 'null')
     if (!user) { window.location.href = '/login'; return }
-    ;(async()=>{ try { setCategories(await getCategories()) } catch { setCategories([]) } })()
+    ;(async()=>{ 
+      try { 
+        setCategories(await getCategories())
+        setTasks(await getTasks())
+      } catch { 
+        setCategories([])
+        setTasks([])
+      } 
+    })()
   }, [])
 
   const onCreate = async (e) => {
@@ -33,7 +38,7 @@ export default function Dashboard() {
     try {
       const user = JSON.parse(localStorage.getItem('ct_user'))
       const saved = await createTask({ title, description:'', dueDate, status, user:{ userId: user?.userId || 1 } })
-      setTasks(prev=>{ const next=[saved, ...prev]; localStorage.setItem('ct_tasks', JSON.stringify(next)); return next })
+      setTasks(prev=>[saved, ...prev])
       setTitle(''); setDueDate(''); setStatus('pending')
     } catch (error) {
       console.error(error)
@@ -77,44 +82,46 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper} style={{background: '#dcfce7'}}>
-            <CheckCircle2 size={20} color="#16a34a" />
+      <section className={styles.statsPanel}>
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <div className={styles.statIconWrapper} style={{background: '#dcfce7'}}>
+              <CheckCircle2 size={20} color="#16a34a" />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statValue}>{completed}</div>
+              <div className={styles.statLabel}>Completed</div>
+            </div>
           </div>
-          <div className={styles.statInfo}>
-            <div className={styles.statValue}>{completed}</div>
-            <div className={styles.statLabel}>Completed</div>
-          </div>
-        </div>
 
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper} style={{background: '#fef3c7'}}>
-            <Clock size={20} color="#ca8a04" />
+          <div className={styles.statCard}>
+            <div className={styles.statIconWrapper} style={{background: '#fef3c7'}}>
+              <Clock size={20} color="#ca8a04" />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statValue}>{pending}</div>
+              <div className={styles.statLabel}>Pending</div>
+            </div>
           </div>
-          <div className={styles.statInfo}>
-            <div className={styles.statValue}>{pending}</div>
-            <div className={styles.statLabel}>Pending</div>
-          </div>
-        </div>
 
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper} style={{background: '#dbeafe'}}>
-            <TrendingUp size={20} color="#2563eb" />
+          <div className={styles.statCard}>
+            <div className={styles.statIconWrapper} style={{background: '#dbeafe'}}>
+              <TrendingUp size={20} color="#2563eb" />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statValue}>{inProgress}</div>
+              <div className={styles.statLabel}>In Progress</div>
+            </div>
           </div>
-          <div className={styles.statInfo}>
-            <div className={styles.statValue}>{inProgress}</div>
-            <div className={styles.statLabel}>In Progress</div>
-          </div>
-        </div>
 
-        <div className={styles.statCard}>
-          <div className={styles.statIconWrapper} style={{background: '#f3e8ff'}}>
-            <Calendar size={20} color="#9333ea" />
-          </div>
-          <div className={styles.statInfo}>
-            <div className={styles.statValue}>{total}</div>
-            <div className={styles.statLabel}>Total Tasks</div>
+          <div className={styles.statCard}>
+            <div className={styles.statIconWrapper} style={{background: '#f3e8ff'}}>
+              <Calendar size={20} color="#9333ea" />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statValue}>{total}</div>
+              <div className={styles.statLabel}>Total Tasks</div>
+            </div>
           </div>
         </div>
       </section>
