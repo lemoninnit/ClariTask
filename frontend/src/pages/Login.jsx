@@ -2,12 +2,13 @@
 // LOGIN.JSX
 import React, { useState } from 'react'
 import AuthLayout from '../layouts/AuthLayout'
+import Card from '../components/Card'
 import TextField from '../components/TextField'
 import Button from '../components/Button'
 import SocialButtons from '../components/SocialButtons'
 import { login } from '../lib/api'
 import { Eye, EyeOff, ArrowRight } from 'lucide-react'
-import styles from './Auth.module.css'
+// inline styles
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -33,11 +34,12 @@ export default function Login() {
     <AuthLayout
       title="Welcome back!"
       subtitle="Enter your credentials to access your account"
-      imageUrl="/wildcat.jpg"
+      imageUrl="/public/wildcat.jpg"
     >
-      <form onSubmit={onSubmit} className={styles.form}>
-        <TextField 
-          label="Email address" 
+      <Card>
+        <form onSubmit={onSubmit} style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          <TextField 
+            label="Email address" 
           type="email" 
           placeholder="Enter your email" 
           value={email} 
@@ -50,7 +52,7 @@ export default function Login() {
           placeholder="Enter password" 
           value={password} 
           onChange={(e)=>setPassword(e.target.value)}
-          inputClassName={styles.passwordInput}
+          inputClassName=""
           required
           suffix={
             <button type="button" onClick={() => setShowPassword(!showPassword)}>
@@ -58,16 +60,17 @@ export default function Login() {
             </button>
           }
         />
-        <div className={styles.forgotPassword}>
+        <div style={{ textAlign:'right' }}>
           <a href="#">Forgot password?</a>
         </div>
-        <Button type="submit" disabled={loading} className={styles.submitBtn}>
-          {loading ? 'Signing in...' : 'Sign In'} <ArrowRight size={18} />
-        </Button>
-      </form>
-      <div className={styles.divider}>Or continue with</div>
+          <Button type="submit" disabled={loading} className="" >
+            {loading ? 'Signing in...' : 'Sign In'} <ArrowRight size={18} />
+          </Button>
+        </form>
+      </Card>
+      <div style={{ margin:'16px 0', color:'#6b7280', textAlign:'center' }}>Or continue with</div>
       <SocialButtons />
-      <div className={styles.signup}>
+      <div style={{ marginTop:24, color:'#111827' }}>
         Don't have an account? <a href="/signup">Create one</a>
       </div>
     </AuthLayout>

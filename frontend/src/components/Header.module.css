@@ -1,8 +1,0 @@
-.header { border-bottom: 1px solid #e5e7eb; background: #fff; }
-.wrap { max-width: 1100px; margin: 0 auto; padding: 12px 20px; display:flex; align-items:center; justify-content:space-between; }
-.brand { font-weight: 800; color: #0f172a; font-size: 20px; }
-.nav { display: inline-flex; gap: 8px; }
-.ghost { padding: 8px 14px; border: 1px solid #e5e7eb; border-radius: 10px; color:#0f172a; }
-.ghost:hover { background:#f3f4f6; }
-.primary { padding: 8px 14px; border-radius: 10px; background:#3f5d2a; color:#fff; }
-.primary:hover { filter:brightness(1.05); }

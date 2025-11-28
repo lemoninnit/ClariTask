@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AppLayout from '../layouts/AppLayout'
-import styles from './Calendar.module.css'
+import Card from '../components/Card'
+ 
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react'
 import { getTasks } from '../api/tasks'
 
@@ -47,55 +48,54 @@ export default function Calendar() {
 
   return (
     <AppLayout>
-      <div className={styles.container}>
-        <div className={styles.header}>
+      <div style={{ maxWidth:1100, margin:'0 auto' }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
           <div>
-            <h1 className={styles.title}>
+            <h1 style={{ fontWeight:800, fontSize:28, color:'#0f172a', display:'flex', alignItems:'center', gap:8 }}>
               <CalendarIcon size={28} /> Calendar
             </h1>
-            <p className={styles.subtitle}>Track your assignments by due date</p>
+            <p style={{ color:'#6b7280' }}>Track your assignments by due date</p>
           </div>
         </div>
 
-        <div className={styles.calendarCard}>
-          <div className={styles.monthHeader}>
-            <button onClick={prevMonth} className={styles.navBtn} title="Previous month">
+        <Card>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+            <button onClick={prevMonth} style={{ padding:'8px 10px', border:'1px solid #e5e7eb', borderRadius:8, background:'#fff' }} title="Previous month">
               <ChevronLeft size={20} />
             </button>
-            <h2 className={styles.monthYear}>{monthYear}</h2>
-            <button onClick={nextMonth} className={styles.navBtn} title="Next month">
+            <h2 style={{ fontWeight:700, color:'#0f172a' }}>{monthYear}</h2>
+            <button onClick={nextMonth} style={{ padding:'8px 10px', border:'1px solid #e5e7eb', borderRadius:8, background:'#fff' }} title="Next month">
               <ChevronRight size={20} />
             </button>
           </div>
 
-          <div className={styles.weekDays}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:8, marginBottom:8 }}>
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className={styles.weekDay}>{day}</div>
+              <div key={day} style={{ textAlign:'center', fontWeight:600, color:'#334155' }}>{day}</div>
             ))}
           </div>
 
-          <div className={styles.calendarGrid}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:8 }}>
             {allCalendarDays.map((day, idx) => (
               <div 
                 key={idx} 
-                className={`${styles.dayCell} ${!day ? styles.empty : ''}`}
+                style={{ border:'1px dashed #e5e7eb', borderRadius:8, minHeight:110, background: !day ? '#f9fafb' : '#fff' }}
               >
                 {day && (
-                  <div className={styles.dayContent}>
-                    <div className={styles.dayNumber}>{day}</div>
-                    <div className={styles.dayTasks}>
+                  <div style={{ padding:8 }}>
+                    <div style={{ fontWeight:700, color:'#334155', marginBottom:8 }}>{day}</div>
+                    <div style={{ display:'grid', gap:6 }}>
                       {getTasksForDay(day).slice(0, 2).map((task, i) => (
                         <div 
                           key={i} 
-                          className={styles.taskBadge}
-                          style={{ borderLeftColor: getStatusColor(task.status) }}
+                          style={{ border:'1px solid #e5e7eb', borderLeft:'4px solid '+getStatusColor(task.status), borderRadius:8, padding:'6px 10px', fontSize:13, color:'#334155' }}
                           title={task.title}
                         >
                           {task.title.substring(0, 12)}
                         </div>
                       ))}
                       {getTasksForDay(day).length > 2 && (
-                        <div className={styles.moreTask}>
+                        <div style={{ fontSize:12, color:'#64748b' }}>
                           +{getTasksForDay(day).length - 2} more
                         </div>
                       )}
@@ -105,25 +105,25 @@ export default function Calendar() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        <div className={styles.legend}>
-          <div className={styles.legendItem}>
-            <span className={styles.legendDot} style={{background: '#3b82f6'}}></span>
+        <div style={{ display:'flex', gap:16, marginTop:16 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span style={{ width:10, height:10, borderRadius:999, display:'inline-block', background:'#3b82f6' }}></span>
             <span>Pending</span>
           </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendDot} style={{background: '#f59e0b'}}></span>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span style={{ width:10, height:10, borderRadius:999, display:'inline-block', background:'#f59e0b' }}></span>
             <span>In Progress</span>
           </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendDot} style={{background: '#10b981'}}></span>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span style={{ width:10, height:10, borderRadius:999, display:'inline-block', background:'#10b981' }}></span>
             <span>Completed</span>
           </div>
         </div>
 
         {loading && (
-          <div className={styles.loadingMsg}>Loading tasks...</div>
+          <div style={{ textAlign:'center', marginTop:12, color:'#64748b' }}>Loading tasks...</div>
         )}
       </div>
     </AppLayout>

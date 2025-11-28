@@ -1,13 +1,13 @@
 import React from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import styles from './SiteLayout.module.css'
 
 export default function SiteLayout({ children }) {
+  const s = { page: { minHeight:'100vh', display:'flex', flexDirection:'column' }, main: { flex:1 } }
   return (
-    <div className={styles.page}>
+    <div style={s.page}>
       <Header />
-      <main className={styles.main}>{children}</main>
+      <main style={s.main}>{children}</main>
       <Footer />
     </div>
   )

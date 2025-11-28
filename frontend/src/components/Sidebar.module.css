@@ -1,4 +1,4 @@
-.sidebar { border-right:1px solid #e5e7eb; padding:16px; background:#fff; display:flex; flex-direction:column; }
+.sidebar { border-right:1px solid #e5e7eb; padding:16px; background:#fff; display:flex; flex-direction:column; border-top-right-radius:16px; border-bottom-right-radius:16px; }
 .brandRow { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
 .brandIcon { width:28px; height:28px; border-radius:999px; display:flex; align-items:center; justify-content:center; border:1px solid #cbd5e1; color:#2563eb; font-weight:800; }
 .brandText { font-weight:800; color:#0f172a; font-size:16px; }
@@ -7,4 +7,7 @@
 .link:hover { background:#f3f4f6; }
 .active { background:#3f5d2a; color:#fff; }
 .active:hover { background:#2d4420; }
+.section { margin-top:16px; padding-top:10px; border-top:1px solid #e5e7eb; }
+.sectionTitle { display:flex; align-items:center; gap:8px; color:#334155; padding:10px 12px; border-radius:8px; }
+.sectionContent { color:#64748b; padding:8px 12px; }
 .bottom { margin-top:auto; }

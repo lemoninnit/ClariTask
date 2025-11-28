@@ -2,10 +2,11 @@ import React from 'react'
 import styles from './TaskItem.module.css'
 
 export default function TaskItem({ title, dueDate, status }) {
+  const css = styles || {}
   return (
-    <div className={styles.item}>
-      <div className={styles.title}>{title}</div>
-      <div className={styles.meta}>Due: {dueDate || '—'} · {status}</div>
+    <div className={css.item || ''}>
+      <div className={css.title || ''}>{title}</div>
+      <div className={css.meta || ''}>Due: {dueDate || '—'} · {status}</div>
     </div>
   )
 }
