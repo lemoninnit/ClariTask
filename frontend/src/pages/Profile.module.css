@@ -1,7 +1,0 @@
-.container { max-width: 800px; margin: 0 auto; }
-.title { font-weight: 800; font-size: 28px; color:#0f172a; }
-.card { margin-top: 16px; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; display:flex; gap:16px; align-items:center; }
-.avatar { width:64px; height:64px; border-radius:999px; background:#e5e7eb; display:flex; align-items:center; justify-content:center; font-weight:700; color:#374151; }
-.info { display:grid; gap:8px; }
-.row { display:flex; gap:12px; }
-.label { color:#64748b; width:100px; }

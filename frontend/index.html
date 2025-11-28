@@ -2,12 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      window.addEventListener('error', function(e){
+        const div = document.createElement('div');
+        div.style.position='fixed';div.style.bottom='12px';div.style.left='12px';div.style.background='#fee2e2';div.style.color='#991b1b';div.style.padding='8px 12px';div.style.borderRadius='8px';div.style.fontFamily='system-ui, sans-serif';
+        div.textContent = 'Runtime error: ' + (e.error && e.error.message ? e.error.message : e.message);
+        document.body.appendChild(div);
+      });
+    </script>
+
   </body>
 </html>

@@ -1,6 +1,0 @@
-.form { display:flex; flex-direction:column; gap:14px; }
-.passwordInput { padding-right: 44px; }
-.submitBtn { margin-top: 4px; }
-.divider { margin:16px 0; color:#6b7280; text-align:center; }
-.signup { margin-top:24px; color:#111827; }
-.signup a { color:#3f5d2a; }

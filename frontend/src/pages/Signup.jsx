@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import AuthLayout from '../layouts/AuthLayout'
+import Card from '../components/Card'
 import TextField from '../components/TextField'
 import Checkbox from '../components/Checkbox'
 import Button from '../components/Button'
 import SocialButtons from '../components/SocialButtons'
 import { register } from '../lib/api'
 import { Eye, EyeOff, Check, ArrowRight } from 'lucide-react'
-import styles from './Auth.module.css'
+// inline styles
 
 export default function Signup() {
   const [name, setName] = useState('')
@@ -37,11 +38,12 @@ export default function Signup() {
   return (
     <AuthLayout
       title="Get Started Now"
-      imageUrl="/wildcat.jpg"
+      imageUrl="/public/wildcat.jpg"
     >
-      <form onSubmit={onSubmit} className={styles.form}>
-        <TextField 
-          label="Full Name" 
+      <Card>
+        <form onSubmit={onSubmit} style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          <TextField 
+            label="Full Name" 
           placeholder="Enter your name" 
           value={name} 
           onChange={(e)=>setName(e.target.value)}
@@ -61,7 +63,7 @@ export default function Signup() {
           placeholder="Enter password" 
           value={password} 
           onChange={(e)=>setPassword(e.target.value)}
-          inputClassName={styles.passwordInput}
+          inputClassName=""
           required
           suffix={
             <button type="button" onClick={() => setShowPassword(!showPassword)}>
@@ -74,13 +76,14 @@ export default function Signup() {
           onChange={(e)=>setAgree(e.target.checked)} 
           label={<span>I agree to the <a href="#">terms & policy</a></span>} 
         />
-        <Button type="submit" disabled={loading} className={styles.submitBtn}>
-          {loading ? 'Creating account...' : 'Create Account'} <ArrowRight size={18} />
-        </Button>
-      </form>
-      <div className={styles.divider}>Or sign up with</div>
+          <Button type="submit" disabled={loading} className="">
+            {loading ? 'Creating account...' : 'Create Account'} <ArrowRight size={18} />
+          </Button>
+        </form>
+      </Card>
+      <div style={{ margin:'16px 0', color:'#6b7280', textAlign:'center' }}>Or sign up with</div>
       <SocialButtons />
-      <div className={styles.signup}>
+      <div style={{ marginTop:24, color:'#111827' }}>
         Already have an account? <a href="/login">Sign In</a>
       </div>
     </AuthLayout>

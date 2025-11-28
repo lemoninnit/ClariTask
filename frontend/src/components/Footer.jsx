@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './Footer.module.css'
 import { Twitter, Instagram, Youtube, Linkedin } from 'lucide-react'
 
 const columns = [
@@ -38,21 +37,32 @@ const columns = [
 ]
 
 export default function Footer() {
+  const s = {
+    footer: { borderTop:'1px solid #e5e7eb', padding:'24px 20px', background:'#fff' },
+    socialRow: { maxWidth:1100, margin:'0 auto 16px', display:'flex', gap:10 },
+    social: { display:'inline-flex', alignItems:'center', justifyContent:'center', width:28, height:28, border:'1px solid #e5e7eb', borderRadius:999, color:'#374151', fontSize:12 },
+    columns: { maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:24 },
+    column: {},
+    colTitle: { fontWeight:600, color:'#111827', marginBottom:8 },
+    list: { listStyle:'none', padding:0, margin:0 },
+    listItem: { margin:'6px 0' },
+    link: { color:'#374151' },
+  }
   return (
-    <footer className={styles.footer}>
-      <div className={styles.socialRow}>
-        <a className={styles.social} href="#" aria-label="Twitter"><Twitter size={16} /></a>
-        <a className={styles.social} href="#" aria-label="Instagram"><Instagram size={16} /></a>
-        <a className={styles.social} href="#" aria-label="YouTube"><Youtube size={16} /></a>
-        <a className={styles.social} href="#" aria-label="LinkedIn"><Linkedin size={16} /></a>
+    <footer style={s.footer}>
+      <div style={s.socialRow}>
+        <a style={s.social} href="#" aria-label="Twitter"><Twitter size={16} /></a>
+        <a style={s.social} href="#" aria-label="Instagram"><Instagram size={16} /></a>
+        <a style={s.social} href="#" aria-label="YouTube"><Youtube size={16} /></a>
+        <a style={s.social} href="#" aria-label="LinkedIn"><Linkedin size={16} /></a>
       </div>
-      <div className={styles.columns}>
+      <div style={s.columns}>
         {columns.map((col) => (
-          <div key={col.title} className={styles.column}>
-            <div className={styles.colTitle}>{col.title}</div>
-            <ul className={styles.list}>
+          <div key={col.title} style={s.column}>
+            <div style={s.colTitle}>{col.title}</div>
+            <ul style={s.list}>
               {col.links.map((l) => (
-                <li key={l.label}><a href="#">{l.label}</a></li>
+                <li key={l.label} style={s.listItem}><a href="#" style={s.link}>{l.label}</a></li>
               ))}
             </ul>
           </div>
