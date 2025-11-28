@@ -1,8 +1,6 @@
-# ClariTask – Run Guide
+# ClariTask – Setup and Run
 
-This project is a full-stack application:
-- Backend: Spring Boot + MySQL (`backend/`)
-- Frontend: React + Vite (`frontend/`)
+Full‑stack app with a Spring Boot backend and a React (Webpack) frontend.
 
 ## Prerequisites
 - Node.js 18+
@@ -10,55 +8,59 @@ This project is a full-stack application:
 - MySQL Server 8+
 - PowerShell (Windows)
 
+## Quick Start
+1. Configure database credentials in `backend/src/main/resources/application.properties`.
+2. Start the backend:
+   ```
+   cd backend
+   mvnw spring-boot:run
+   ```
+   Backend runs on `http://localhost:8080/`.
+3. Start the frontend:
+   ```
+   cd frontend
+   npm install
+   npm start
+   ```
+   Frontend runs on `http://localhost:3000/`.
+4. Sign up a user on the frontend, then verify via `http://localhost:8080/api/users` and in MySQL Workbench (`claritask` schema).
+
+## Backend (Spring Boot)
+- App entry: `ClariTaskApplication` (`@SpringBootApplication`).
+- API base: `http://localhost:8080/api`.
+- Example endpoints:
+  - `GET /api/users`
+  - `POST /api/users` (JSON body: `{ "name": "John", "email": "john@example.com", "password": "pass1234", "role": "student" }`)
+- Configuration: edit `spring.datasource.*` values in `backend/src/main/resources/application.properties`.
+- Common port issue (8080 in use):
+  ```
+  Get-Process -Id (Get-NetTCPConnection -LocalPort 8080 | Select-Object -First 1).OwningProcess | Stop-Process -Force
+  ```
+
+## Frontend (React + Webpack)
+- Dev server: `npm start` (Webpack Dev Server).
+- Open `http://localhost:3000/`.
+- Pages: `/` (Landing), `/signup`, `/login`, `/dashboard`.
+- Lint:
+  ```
+  cd frontend
+  npm run lint
+  ```
+
 ## Database Setup
-1. Ensure MySQL Server is running locally.
-2. Verify credentials in `backend/src/main/resources/application.properties`:
+1. Ensure MySQL is running locally.
+2. Set credentials in `application.properties`:
    - `spring.datasource.url=jdbc:mysql://localhost:3306/claritask?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC`
    - `spring.datasource.username=<your-username>`
    - `spring.datasource.password=<your-password>`
    - `spring.jpa.hibernate.ddl-auto=update`
-3. The schema `claritask` and tables will be created automatically on backend start.
-
-## Start Backend (Spring Boot)
-In an IDE, run `ClariTaskApplication` (`@SpringBootApplication`). Or from terminal:
-```
-cd backend
-mvnw spring-boot:run
-```
-- Runs on `http://localhost:8080/`
-- Example endpoints:
-  - `GET http://localhost:8080/api/users`
-  - `POST http://localhost:8080/api/users` (JSON body: `{ "name": "John", "email": "john@example.com", "password": "pass1234", "role": "student" }`)
-
-### Common Issue: Port 8080 in Use
-If startup fails with “Port 8080 was already in use”, stop the process:
-```
-Get-Process -Id (Get-NetTCPConnection -LocalPort 8080 | Select-Object -First 1).OwningProcess | Stop-Process -Force
-```
-Then rerun the backend command.
-
-## Start Frontend (React + Vite)
-```
-cd frontend
-npm install
-npm start
-```
-- Open `http://localhost:5173/`
-- Pages: `/` (Landing), `/signup`, `/login`
-
-## Verify End-to-End
-1. Start backend and frontend.
-2. Create a user via the Signup page.
-3. Check `http://localhost:8080/api/users` to see saved users.
-4. In MySQL Workbench: refresh schemas → `claritask` → `users` table should contain the new row.
-
-## Lint
-Frontend:
-```
-cd frontend
-npm run lint
-```
+3. On first run, the `claritask` schema and tables are created automatically.
 
 ## Project Structure
-- `backend/` Spring Boot app (package `com.appdev.yin.yang.claritask`)
-- `frontend/` React app with pages, components, and layouts
+- `backend/` Spring Boot app (package `com.appdevg6.yinandyang.claritask`)
+- `frontend/` React app with `src/` pages, components, and layouts
+
+## Troubleshooting
+- MySQL connection errors: verify credentials and that port 3306 is open.
+- Node version issues: ensure Node 18+ (`node -v`).
+- If the frontend doesn’t build, run `npm install` inside `frontend/` and retry.
