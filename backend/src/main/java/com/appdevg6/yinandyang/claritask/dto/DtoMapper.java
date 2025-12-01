@@ -21,6 +21,7 @@ public class DtoMapper {
         d.setStatus(t.getStatus());
         d.setUserId(t.getUser() != null ? t.getUser().getUserId() : null);
         d.setCategoryId(t.getCategory() != null ? t.getCategory().getCategoryId() : null);
+        d.setCategoryName(t.getCategory() != null ? t.getCategory().getName() : null);
         return d;
     }
 

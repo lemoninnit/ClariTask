@@ -10,6 +10,7 @@ public class TaskDto {
     private String status;
     private Long userId;
     private Long categoryId;
+    private String categoryName;
 
     public Long getTaskId() { return taskId; }
     public void setTaskId(Long taskId) { this.taskId = taskId; }
@@ -25,4 +26,6 @@ public class TaskDto {
     public void setUserId(Long userId) { this.userId = userId; }
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 }

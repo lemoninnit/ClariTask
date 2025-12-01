@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import styles from './Sidebar.module.css'
 import { LayoutDashboard, ListTodo, CalendarDays, Megaphone, User } from 'lucide-react'
 import { getAnnouncements } from '../api/announcements'
@@ -17,12 +18,15 @@ export default function Sidebar() {
     sectionTitle: { display:'flex', alignItems:'center', gap:8, color:'#334155', padding:'10px 12px', borderRadius:8 },
     sectionContent: { color:'#64748b', padding:'8px 12px' },
   }
-  const path = typeof window !== 'undefined' ? window.location.pathname : ''
-  const link = (href, label, Icon) => (
-    <a href={href} className={`${css.link || ''} ${path === href ? (css.active || '') : ''}`} style={{ ...s.link, ...(path === href ? s.active : {}) }}>
+  const link = (to, label, Icon) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) => `${css.link || ''} ${isActive ? (css.active || '') : ''}`}
+      style={({ isActive }) => ({ ...s.link, ...(isActive ? s.active : {}) })}
+    >
       <Icon size={18} />
       <span>{label}</span>
-    </a>
+    </NavLink>
   )
 
   const [ann, setAnn] = useState([])
