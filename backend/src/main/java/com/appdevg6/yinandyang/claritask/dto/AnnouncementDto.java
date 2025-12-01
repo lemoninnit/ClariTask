@@ -8,6 +8,10 @@ public class AnnouncementDto {
     private String content;
     private Long userId;
     private LocalDateTime createdAt;
+    private Long taskId;
+    private String taskTitle;
+    private LocalDateTime taskDueAt;
+    private String taskCategoryName;
 
     public Long getAnnouncementId() { return announcementId; }
     public void setAnnouncementId(Long announcementId) { this.announcementId = announcementId; }
@@ -19,4 +23,12 @@ public class AnnouncementDto {
     public void setUserId(Long userId) { this.userId = userId; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Long getTaskId() { return taskId; }
+    public void setTaskId(Long taskId) { this.taskId = taskId; }
+    public String getTaskTitle() { return taskTitle; }
+    public void setTaskTitle(String taskTitle) { this.taskTitle = taskTitle; }
+    public LocalDateTime getTaskDueAt() { return taskDueAt; }
+    public void setTaskDueAt(LocalDateTime taskDueAt) { this.taskDueAt = taskDueAt; }
+    public String getTaskCategoryName() { return taskCategoryName; }
+    public void setTaskCategoryName(String taskCategoryName) { this.taskCategoryName = taskCategoryName; }
 }

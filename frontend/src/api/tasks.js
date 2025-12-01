@@ -1,7 +1,8 @@
 const BASE = 'http://localhost:8080/api'
 
-export async function getTasks() {
-  const r = await fetch(`${BASE}/tasks`)
+export async function getTasks(userId) {
+  const query = userId ? `?userId=${userId}` : ''
+  const r = await fetch(`${BASE}/tasks${query}`)
   if (!r.ok) throw new Error('Failed to load tasks')
   return r.json()
 }

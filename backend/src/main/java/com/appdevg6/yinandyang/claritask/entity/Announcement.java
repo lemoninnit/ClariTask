@@ -20,6 +20,10 @@ public class Announcement {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    private Task task;
+
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -31,6 +35,8 @@ public class Announcement {
     public void setContent(String content) { this.content = content; }
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+    public Task getTask() { return task; }
+    public void setTask(Task task) { this.task = task; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

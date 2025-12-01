@@ -13,6 +13,7 @@ public class TaskService {
     public TaskService(TaskRepository tasks) { this.tasks = tasks; }
 
     public List<Task> all() { return tasks.findAll(); }
+    public List<Task> byUser(Long userId) { return tasks.findByUserUserId(userId); }
     public Optional<Task> get(Long id) { return tasks.findById(id); }
     public Task create(Task t) { return tasks.save(t); }
     public Task update(Task t) { return tasks.save(t); }

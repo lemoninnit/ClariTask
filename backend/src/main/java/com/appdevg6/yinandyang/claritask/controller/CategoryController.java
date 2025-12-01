@@ -3,7 +3,9 @@ package com.appdevg6.yinandyang.claritask.controller;
 import com.appdevg6.yinandyang.claritask.dto.CategoryDto;
 import com.appdevg6.yinandyang.claritask.dto.DtoMapper;
 import com.appdevg6.yinandyang.claritask.entity.Category;
+import com.appdevg6.yinandyang.claritask.entity.User;
 import com.appdevg6.yinandyang.claritask.service.CategoryService;
+import com.appdevg6.yinandyang.claritask.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,13 +15,24 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/categories")
 public class CategoryController {
     private final CategoryService service;
-    public CategoryController(CategoryService service) { this.service = service; }
+    private final UserRepository users;
+    public CategoryController(CategoryService service, UserRepository users) {
+        this.service = service;
+        this.users = users;
+    }
 
     @GetMapping
-    public List<CategoryDto> all() { return service.all().stream().map(DtoMapper::toDto).collect(Collectors.toList()); }
+    public List<CategoryDto> all(@RequestParam Long userId) {
+        return service.byUser(userId).stream().map(DtoMapper::toDto).collect(Collectors.toList());
+    }
 
     @PostMapping
-    public ResponseEntity<CategoryDto> create(@RequestBody Category c) { Category saved = service.create(c); return ResponseEntity.ok(DtoMapper.toDto(saved)); }
+    public ResponseEntity<CategoryDto> create(@RequestParam Long userId, @RequestBody Category c) {
+        User u = users.findById(userId).orElseThrow();
+        c.setUser(u);
+        Category saved = service.create(c);
+        return ResponseEntity.ok(DtoMapper.toDto(saved));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody Category c) {

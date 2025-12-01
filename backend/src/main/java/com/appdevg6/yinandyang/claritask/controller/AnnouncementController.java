@@ -3,23 +3,55 @@ package com.appdevg6.yinandyang.claritask.controller;
 import com.appdevg6.yinandyang.claritask.dto.AnnouncementDto;
 import com.appdevg6.yinandyang.claritask.dto.DtoMapper;
 import com.appdevg6.yinandyang.claritask.entity.Announcement;
+import com.appdevg6.yinandyang.claritask.entity.Task;
+import com.appdevg6.yinandyang.claritask.entity.User;
 import com.appdevg6.yinandyang.claritask.repository.AnnouncementRepository;
+import com.appdevg6.yinandyang.claritask.repository.TaskRepository;
+import com.appdevg6.yinandyang.claritask.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/announcements")
 public class AnnouncementController {
     private final AnnouncementRepository repo;
-    public AnnouncementController(AnnouncementRepository repo) { this.repo = repo; }
+    private final UserRepository users;
+    private final TaskRepository tasks;
+
+    public AnnouncementController(AnnouncementRepository repo, UserRepository users, TaskRepository tasks) {
+        this.repo = repo;
+        this.users = users;
+        this.tasks = tasks;
+    }
 
     @GetMapping
-    public List<AnnouncementDto> all() { return repo.findAll().stream().map(DtoMapper::toDto).collect(Collectors.toList()); }
+    public List<AnnouncementDto> all(@RequestParam Long userId) {
+        return repo.findByUserUserIdOrderByCreatedAtDesc(userId).stream()
+                .map(DtoMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
     @PostMapping
-    public ResponseEntity<AnnouncementDto> create(@RequestBody Announcement a) { Announcement saved = repo.save(a); return ResponseEntity.ok(DtoMapper.toDto(saved)); }
+    public ResponseEntity<AnnouncementDto> create(
+            @RequestParam Long userId,
+            @RequestParam(required = false) Long taskId,
+            @RequestBody Announcement a
+    ) {
+        User u = users.findById(userId).orElseThrow();
+        a.setUser(u);
+        if (taskId != null) {
+            Optional<Task> tOpt = tasks.findById(taskId);
+            tOpt.ifPresent(a::setTask);
+            if (tOpt.isPresent() && (a.getTitle() == null || a.getTitle().isBlank())) {
+                a.setTitle("Update for: " + tOpt.get().getTitle());
+            }
+        }
+        Announcement saved = repo.save(a);
+        return ResponseEntity.ok(DtoMapper.toDto(saved));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<AnnouncementDto> update(@PathVariable Long id, @RequestBody Announcement a) {

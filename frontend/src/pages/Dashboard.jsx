@@ -23,8 +23,8 @@ export default function Dashboard() {
     if (!user) { window.location.href = '/login'; return }
     ;(async()=>{ 
       try { 
-        setCategories(await getCategories())
-        setTasks(await getTasks())
+        setCategories(await getCategories(user.userId))
+        setTasks(await getTasks(user.userId))
       } catch { 
         setCategories([])
         setTasks([])
@@ -49,7 +49,8 @@ export default function Dashboard() {
     e.preventDefault()
     if (!newCat.trim()) return
     try {
-      const saved = await createCategory({ name: newCat })
+      const user = JSON.parse(localStorage.getItem('ct_user'))
+      const saved = await createCategory(user.userId, { name: newCat })
       setCategories(prev=>[...prev, saved])
       setNewCat('')
     } catch { setCategories(prev=>prev) }

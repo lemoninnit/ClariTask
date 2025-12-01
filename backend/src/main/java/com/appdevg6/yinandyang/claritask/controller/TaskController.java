@@ -16,7 +16,12 @@ public class TaskController {
     public TaskController(TaskService service) { this.service = service; }
 
     @GetMapping
-    public List<TaskDto> all() { return service.all().stream().map(DtoMapper::toDto).collect(Collectors.toList()); }
+    public List<TaskDto> all(@RequestParam(required = false) Long userId) {
+        return (userId != null ? service.byUser(userId) : service.all())
+                .stream()
+                .map(DtoMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
     @PostMapping
     public ResponseEntity<TaskDto> create(@RequestBody Task t) {

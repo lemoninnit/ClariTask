@@ -14,6 +14,10 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany(mappedBy = "category")
     private Set<Task> tasks = new HashSet<>();
 
@@ -21,6 +25,8 @@ public class Category {
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     public Set<Task> getTasks() { return tasks; }
     public void setTasks(Set<Task> tasks) { this.tasks = tasks; }
 }

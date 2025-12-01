@@ -17,7 +17,9 @@ export default function Tasks() {
   useEffect(() => {
     ;(async () => {
       try {
-        const list = await getCategories()
+        const user = JSON.parse(localStorage.getItem('ct_user') || 'null')
+        if (!user) return
+        const list = await getCategories(user.userId)
         setCategories(list)
       } catch {
         setCategories([])

@@ -48,6 +48,11 @@ public class DtoMapper {
         d.setContent(a.getContent());
         d.setUserId(a.getUser() != null ? a.getUser().getUserId() : null);
         d.setCreatedAt(a.getCreatedAt());
+        if (a.getTask() != null) {
+            d.setTaskId(a.getTask().getTaskId());
+            d.setTaskTitle(a.getTask().getTitle());
+            d.setTaskCategoryName(a.getTask().getCategory() != null ? a.getTask().getCategory().getName() : null);
+        }
         return d;
     }
 }

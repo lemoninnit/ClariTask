@@ -13,6 +13,7 @@ public class AnnouncementService {
     public AnnouncementService(AnnouncementRepository announcements) { this.announcements = announcements; }
 
     public List<Announcement> all() { return announcements.findAll(); }
+    public List<Announcement> byUser(Long userId) { return announcements.findByUserUserIdOrderByCreatedAtDesc(userId); }
     public Optional<Announcement> get(Long id) { return announcements.findById(id); }
     public Announcement create(Announcement a) { return announcements.save(a); }
     public Announcement update(Announcement a) { return announcements.save(a); }
