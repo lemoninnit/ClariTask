@@ -4,7 +4,7 @@ import AppLayout from '../layouts/AppLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import { createTask } from '../api/tasks'
-import { getCategories } from '../api/categories'
+import { getCategories, createCategory } from '../api/categories'
 
 export default function Tasks() {
   const [title, setTitle] = useState('')
@@ -13,6 +13,7 @@ export default function Tasks() {
   const [categories, setCategories] = useState([])
   const [categoryId, setCategoryId] = useState('')
   const [creating, setCreating] = useState(false)
+  const [newCat, setNewCat] = useState('')
 
   useEffect(() => {
     ;(async () => {
@@ -54,6 +55,21 @@ export default function Tasks() {
     }
   }
 
+  const onAddCategory = async (e) => {
+    e.preventDefault()
+    if (!newCat.trim()) return
+    try {
+      const user = JSON.parse(localStorage.getItem('ct_user') || 'null')
+      if (!user) return
+      const saved = await createCategory(user.userId, { name: newCat })
+      setCategories(prev => [...prev, saved])
+      setNewCat('')
+      setCategoryId(saved.categoryId)
+    } catch {
+      // keep existing categories on error
+    }
+  }
+
   return (
     <AppLayout>
       <div style={{ maxWidth:800, margin:'0 auto' }}>
@@ -83,6 +99,19 @@ export default function Tasks() {
               ))}
             </select>
             <Button type="submit" disabled={creating}>Add</Button>
+          </form>
+
+          <form
+            onSubmit={onAddCategory}
+            style={{ marginTop:16, display:'grid', gridTemplateColumns:'1fr auto', gap:8 }}
+          >
+            <input
+              value={newCat}
+              onChange={(e) => setNewCat(e.target.value)}
+              placeholder="New category name"
+              style={{ padding:10, border:'1px solid #e5e7eb', borderRadius:8 }}
+            />
+            <Button type="submit">Add Category</Button>
           </form>
         </Card>
       </div>

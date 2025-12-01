@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [dueDate, setDueDate] = useState('')
   const [status, setStatus] = useState('pending')
   const [categories, setCategories] = useState([])
-  const [newCat, setNewCat] = useState('')
+  const [activeCategoryId, setActiveCategoryId] = useState(null)
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('ct_user') || 'null')
@@ -45,21 +45,14 @@ export default function Dashboard() {
     }
   }
 
-  const onAddCategory = async (e) => {
-    e.preventDefault()
-    if (!newCat.trim()) return
-    try {
-      const user = JSON.parse(localStorage.getItem('ct_user'))
-      const saved = await createCategory(user.userId, { name: newCat })
-      setCategories(prev=>[...prev, saved])
-      setNewCat('')
-    } catch { setCategories(prev=>prev) }
-  }
+  const visibleTasks = activeCategoryId
+    ? tasks.filter(t => t.categoryId === activeCategoryId)
+    : tasks
 
-  const completed = tasks.filter(t=>t.status==='completed').length
-  const pending = tasks.filter(t=>t.status==='pending').length
-  const inProgress = tasks.filter(t=>t.status==='in_progress').length
-  const total = tasks.length
+  const completed = visibleTasks.filter(t=>t.status==='completed').length
+  const pending = visibleTasks.filter(t=>t.status==='pending').length
+  const inProgress = visibleTasks.filter(t=>t.status==='in_progress').length
+  const total = visibleTasks.length
 
   const isOverdue = tasks.some(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed')
 
@@ -85,10 +78,23 @@ export default function Dashboard() {
 
       <section style={{ display:'grid', gridTemplateColumns: (typeof window !== 'undefined' && window.innerWidth < 1024) ? '1fr' : '1fr 1fr', gap:20 }}>
         <div>
-          <CategoriesCard categories={categories} newCat={newCat} setNewCat={setNewCat} onAdd={onAddCategory} />
+          <CategoriesCard
+            categories={categories}
+            activeCategoryId={activeCategoryId}
+            onSelect={setActiveCategoryId}
+          />
         </div>
         <div>
-          <TasksCard tasks={tasks} title={title} setTitle={setTitle} dueDate={dueDate} setDueDate={setDueDate} status={status} setStatus={setStatus} onCreate={onCreate} />
+          <TasksCard
+            tasks={visibleTasks}
+            title={title}
+            setTitle={setTitle}
+            dueDate={dueDate}
+            setDueDate={setDueDate}
+            status={status}
+            setStatus={setStatus}
+            onCreate={onCreate}
+          />
         </div>
       </section>
     </div>
