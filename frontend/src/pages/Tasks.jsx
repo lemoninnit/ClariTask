@@ -10,6 +10,8 @@ export default function Tasks() {
   const [title, setTitle] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [status, setStatus] = useState('pending')
+  const [dueTime, setDueTime] = useState('')
+  const [errors, setErrors] = useState({})
   const [categories, setCategories] = useState([])
   const [categoryId, setCategoryId] = useState('')
   const [creating, setCreating] = useState(false)
@@ -30,7 +32,12 @@ export default function Tasks() {
 
   const onCreate = async (e) => {
     e.preventDefault()
-    if (!title.trim()) return
+    const nextErrors = {}
+    if (!title.trim()) nextErrors.title = 'Title is required'
+    if (!dueDate) nextErrors.dueDate = 'Deadline date is required'
+    if (!dueTime) nextErrors.dueTime = 'Deadline time is required'
+    setErrors(nextErrors)
+    if (Object.keys(nextErrors).length > 0) return
     setCreating(true)
     try {
       const user = JSON.parse(localStorage.getItem('ct_user'))
@@ -38,6 +45,7 @@ export default function Tasks() {
         title,
         description: '',
         dueDate,
+        dueTime,
         status,
         user: { userId: user?.userId || 1 },
         category: categoryId ? { categoryId: Number(categoryId) } : null,
@@ -47,6 +55,7 @@ export default function Tasks() {
       localStorage.setItem('ct_tasks', JSON.stringify([saved, ...list]))
       setTitle('')
       setDueDate('')
+      setDueTime('')
       setStatus('pending')
       setCategoryId('')
       window.location.href = '/dashboard'
@@ -77,10 +86,11 @@ export default function Tasks() {
         <Card>
           <form
             onSubmit={onCreate}
-            style={{ marginTop:16, display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1.5fr auto', gap:8 }}
+            style={{ marginTop:16, display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1.2fr 1.2fr auto', gap:8 }}
           >
-            <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Task title" style={{ padding:10, border:'1px solid #e5e7eb', borderRadius:8 }} />
-            <input type="date" value={dueDate} onChange={(e)=>setDueDate(e.target.value)} style={{ padding:10, border:'1px solid #e5e7eb', borderRadius:8 }} />
+            <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Task title" style={{ padding:10, border: (errors.title?'1px solid #ef4444':'1px solid #e5e7eb'), borderRadius:8 }} />
+            <input type="date" value={dueDate} onChange={(e)=>setDueDate(e.target.value)} style={{ padding:10, border: (errors.dueDate?'1px solid #ef4444':'1px solid #e5e7eb'), borderRadius:8 }} />
+            <input type="time" value={dueTime} onChange={(e)=>setDueTime(e.target.value)} style={{ padding:10, border: (errors.dueTime?'1px solid #ef4444':'1px solid #e5e7eb'), borderRadius:8 }} />
             <select value={status} onChange={(e)=>setStatus(e.target.value)} style={{ padding:10, border:'1px solid #e5e7eb', borderRadius:8 }}>
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
@@ -100,6 +110,12 @@ export default function Tasks() {
             </select>
             <Button type="submit" disabled={creating}>Add</Button>
           </form>
+
+          {Object.values(errors).length > 0 && (
+            <div style={{ color:'#ef4444', marginTop:8, fontSize:12 }}>
+              {Object.values(errors).join(' · ')}
+            </div>
+          )}
 
           <form
             onSubmit={onAddCategory}

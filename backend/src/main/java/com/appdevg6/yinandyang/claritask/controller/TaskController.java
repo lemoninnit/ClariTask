@@ -40,6 +40,7 @@ public class TaskController {
             existing.setTitle(t.getTitle());
             existing.setDescription(t.getDescription());
             existing.setDueDate(t.getDueDate());
+            existing.setDueTime(t.getDueTime());
             existing.setStatus(t.getStatus());
             existing.setCategory(t.getCategory());
             Task saved = service.update(existing);
@@ -52,5 +53,14 @@ public class TaskController {
         if (service.get(id).isEmpty()) return ResponseEntity.notFound().build();
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<TaskDto> complete(@PathVariable Long id) {
+        return service.get(id).map(existing -> {
+            existing.setStatus("completed");
+            Task saved = service.update(existing);
+            return ResponseEntity.ok(DtoMapper.toDto(saved));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

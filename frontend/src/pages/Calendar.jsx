@@ -85,18 +85,18 @@ export default function Calendar() {
                   <div style={{ padding:8 }}>
                     <div style={{ fontWeight:700, color:'#334155', marginBottom:8 }}>{day}</div>
                     <div style={{ display:'grid', gap:6 }}>
-                      {getTasksForDay(day).slice(0, 2).map((task, i) => (
+                      {getTasksForDay(day).slice(0, 3).map((task, i) => (
                         <div 
                           key={i} 
                           style={{ border:'1px solid #e5e7eb', borderLeft:'4px solid '+getStatusColor(task.status), borderRadius:8, padding:'6px 10px', fontSize:13, color:'#334155' }}
                           title={task.title}
                         >
-                          {task.title.substring(0, 12)}
+                          {(task.dueTime ? task.dueTime.substring(0,5)+' · ' : '') + task.title.substring(0, 16)}
                         </div>
                       ))}
-                      {getTasksForDay(day).length > 2 && (
+                      {getTasksForDay(day).length > 3 && (
                         <div style={{ fontSize:12, color:'#64748b' }}>
-                          +{getTasksForDay(day).length - 2} more
+                          +{getTasksForDay(day).length - 3} more
                         </div>
                       )}
                     </div>

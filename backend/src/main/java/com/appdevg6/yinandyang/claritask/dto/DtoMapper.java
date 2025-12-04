@@ -18,6 +18,7 @@ public class DtoMapper {
         d.setTitle(t.getTitle());
         d.setDescription(t.getDescription());
         d.setDueDate(t.getDueDate());
+        d.setDueTime(t.getDueTime());
         d.setStatus(t.getStatus());
         d.setUserId(t.getUser() != null ? t.getUser().getUserId() : null);
         d.setCategoryId(t.getCategory() != null ? t.getCategory().getCategoryId() : null);

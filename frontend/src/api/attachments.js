@@ -16,3 +16,12 @@ export async function deleteAttachment(id) {
   const r = await fetch(`${BASE}/attachments/${id}`, { method:'DELETE' })
   if (!r.ok) throw new Error('Failed to delete attachment')
 }
+
+export async function uploadAttachment(taskId, file) {
+  const fd = new FormData()
+  fd.append('taskId', String(taskId))
+  fd.append('file', file)
+  const r = await fetch(`${BASE}/attachments/upload`, { method:'POST', body: fd })
+  if (!r.ok) throw new Error('Failed to upload attachment')
+  return r.json()
+}

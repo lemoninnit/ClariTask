@@ -3,7 +3,7 @@ import Card from './Card'
 import Button from './Button'
 import TaskItem from './TaskItem'
 
-export default function TasksCard({ tasks=[], title, setTitle, dueDate, setDueDate, status, setStatus, onCreate, loading=false }) {
+export default function TasksCard({ tasks=[], title, setTitle, dueDate, setDueDate, dueTime, setDueTime, status, setStatus, onCreate, loading=false }) {
   return (
     <Card title="My Tasks" right={<span style={{ background:'#f1f5f9', color:'#475569', padding:'4px 12px', borderRadius:12, fontSize:14, fontWeight:600 }}>{tasks.length}</span>}>
       <div style={{ display:'grid', gap:10 }}>
@@ -20,8 +20,10 @@ export default function TasksCard({ tasks=[], title, setTitle, dueDate, setDueDa
               key={t.taskId}
               title={t.title}
               dueDate={t.dueDate}
+              dueTime={t.dueTime}
               status={t.status}
               categoryName={t.categoryName}
+              taskId={t.taskId}
             />
           ))
         )}

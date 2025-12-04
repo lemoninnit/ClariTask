@@ -23,3 +23,9 @@ export async function deleteTask(id) {
   const r = await fetch(`${BASE}/tasks/${id}`, { method:'DELETE' })
   if (!r.ok) throw new Error('Failed to delete task')
 }
+
+export async function completeTask(id) {
+  const r = await fetch(`${BASE}/tasks/${id}/complete`, { method:'PUT' })
+  if (!r.ok) throw new Error('Failed to complete task')
+  return r.json()
+}

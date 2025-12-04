@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [title, setTitle] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [status, setStatus] = useState('pending')
+  const [dueTime, setDueTime] = useState('')
   const [categories, setCategories] = useState([])
   const [activeCategoryId, setActiveCategoryId] = useState(null)
 
@@ -37,9 +38,9 @@ export default function Dashboard() {
     if (!title.trim()) return
     try {
       const user = JSON.parse(localStorage.getItem('ct_user'))
-      const saved = await createTask({ title, description:'', dueDate, status, user:{ userId: user?.userId || 1 } })
+      const saved = await createTask({ title, description:'', dueDate, dueTime, status, user:{ userId: user?.userId || 1 } })
       setTasks(prev=>[saved, ...prev])
-      setTitle(''); setDueDate(''); setStatus('pending')
+      setTitle(''); setDueDate(''); setDueTime(''); setStatus('pending')
     } catch (error) {
       console.error(error)
     }
@@ -91,6 +92,8 @@ export default function Dashboard() {
             setTitle={setTitle}
             dueDate={dueDate}
             setDueDate={setDueDate}
+            dueTime={dueTime}
+            setDueTime={setDueTime}
             status={status}
             setStatus={setStatus}
             onCreate={onCreate}

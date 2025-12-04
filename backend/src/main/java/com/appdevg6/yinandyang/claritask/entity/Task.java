@@ -2,6 +2,7 @@ package com.appdevg6.yinandyang.claritask.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,8 @@ public class Task {
     private String description;
 
     private LocalDate dueDate;
+
+    private LocalTime dueTime;
 
     @Column(nullable = false)
     private String status;
@@ -42,6 +45,8 @@ public class Task {
     public void setDescription(String description) { this.description = description; }
     public LocalDate getDueDate() { return dueDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+    public LocalTime getDueTime() { return dueTime; }
+    public void setDueTime(LocalTime dueTime) { this.dueTime = dueTime; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public User getUser() { return user; }
