@@ -1,19 +1,21 @@
-const BASE = 'http://localhost:8080/api'
+import apiClient from '../lib/apiClient.js'
 
-export async function getAnnouncements(userId) {
-  const r = await fetch(`${BASE}/announcements?userId=${userId}`)
-  if (!r.ok) throw new Error('Failed to load announcements')
-  return r.json()
+export async function getAnnouncements() {
+  const response = await apiClient.get('/announcements')
+  return response.data
 }
 
-export async function createAnnouncement(userId, payload, taskId) {
-  const qs = new URLSearchParams({ userId: String(userId), ...(taskId ? { taskId: String(taskId) } : {}) })
-  const r = await fetch(`${BASE}/announcements?${qs.toString()}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-  if (!r.ok) throw new Error('Failed to create announcement')
-  return r.json()
+export async function createAnnouncement(payload, taskId) {
+  const params = taskId ? { taskId } : {}
+  const response = await apiClient.post('/announcements', payload, { params })
+  return response.data
+}
+
+export async function updateAnnouncement(id, payload) {
+  const response = await apiClient.put(`/announcements/${id}`, payload)
+  return response.data
 }
 
 export async function deleteAnnouncement(id) {
-  const r = await fetch(`${BASE}/announcements/${id}`, { method:'DELETE' })
-  if (!r.ok) throw new Error('Failed to delete announcement')
+  await apiClient.delete(`/announcements/${id}`)
 }

@@ -18,7 +18,6 @@ public class DtoMapper {
         d.setTitle(t.getTitle());
         d.setDescription(t.getDescription());
         d.setDueDate(t.getDueDate());
-        d.setDueTime(t.getDueTime());
         d.setStatus(t.getStatus());
         d.setUserId(t.getUser() != null ? t.getUser().getUserId() : null);
         d.setCategoryId(t.getCategory() != null ? t.getCategory().getCategoryId() : null);
@@ -49,9 +48,12 @@ public class DtoMapper {
         d.setContent(a.getContent());
         d.setUserId(a.getUser() != null ? a.getUser().getUserId() : null);
         d.setCreatedAt(a.getCreatedAt());
+        d.setNotificationType(a.getNotificationType());
+        d.setExpiresAt(a.getExpiresAt());
         if (a.getTask() != null) {
             d.setTaskId(a.getTask().getTaskId());
             d.setTaskTitle(a.getTask().getTitle());
+            d.setTaskDueAt(a.getTask().getDueDate());
             d.setTaskCategoryName(a.getTask().getCategory() != null ? a.getTask().getCategory().getName() : null);
         }
         return d;

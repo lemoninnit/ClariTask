@@ -1,14 +1,12 @@
 package com.appdevg6.yinandyang.claritask.dto;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class TaskDto {
     private Long taskId;
     private String title;
     private String description;
-    private LocalDate dueDate;
-    private LocalTime dueTime;
+    private LocalDateTime dueDate;
     private String status;
     private Long userId;
     private Long categoryId;
@@ -20,10 +18,8 @@ public class TaskDto {
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-    public LocalDate getDueDate() { return dueDate; }
-    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
-    public LocalTime getDueTime() { return dueTime; }
-    public void setDueTime(LocalTime dueTime) { this.dueTime = dueTime; }
+    public LocalDateTime getDueDate() { return dueDate; }
+    public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public Long getUserId() { return userId; }

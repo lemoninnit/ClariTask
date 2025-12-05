@@ -8,8 +8,10 @@ import com.appdevg6.yinandyang.claritask.entity.User;
 import com.appdevg6.yinandyang.claritask.repository.AnnouncementRepository;
 import com.appdevg6.yinandyang.claritask.repository.TaskRepository;
 import com.appdevg6.yinandyang.claritask.repository.UserRepository;
+import com.appdevg6.yinandyang.claritask.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,20 +30,30 @@ public class AnnouncementController {
     }
 
     @GetMapping
-    public List<AnnouncementDto> all(@RequestParam Long userId) {
-        return repo.findByUserUserIdOrderByCreatedAtDesc(userId).stream()
+    public List<AnnouncementDto> all() {
+        // Filter out expired notifications
+        LocalDateTime now = LocalDateTime.now();
+        return repo.findAllByOrderByCreatedAtDesc().stream()
+                .filter(ann -> ann.getExpiresAt() == null || ann.getExpiresAt().isAfter(now))
                 .map(DtoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
     public ResponseEntity<AnnouncementDto> create(
-            @RequestParam Long userId,
             @RequestParam(required = false) Long taskId,
-            @RequestBody Announcement a
+            @RequestBody AnnouncementDto announcementDto
     ) {
-        User u = users.findById(userId).orElseThrow();
-        a.setUser(u);
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = users.findById(userId).orElseThrow();
+        
+        // Remove role restriction - both students and teachers can create announcements
+        Announcement a = new Announcement();
+        a.setTitle(announcementDto.getTitle());
+        a.setContent(announcementDto.getContent());
+        a.setUser(user);
+        a.setNotificationType("manual");
+        
         if (taskId != null) {
             Optional<Task> tOpt = tasks.findById(taskId);
             tOpt.ifPresent(a::setTask);
@@ -49,25 +61,34 @@ public class AnnouncementController {
                 a.setTitle("Update for: " + tOpt.get().getTitle());
             }
         }
+        
         Announcement saved = repo.save(a);
         return ResponseEntity.ok(DtoMapper.toDto(saved));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AnnouncementDto> update(@PathVariable Long id, @RequestBody Announcement a) {
-        return repo.findById(id).map(existing -> {
-            existing.setTitle(a.getTitle());
-            existing.setContent(a.getContent());
-            existing.setUser(a.getUser());
-            Announcement saved = repo.save(existing);
-            return ResponseEntity.ok(DtoMapper.toDto(saved));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<AnnouncementDto> update(@PathVariable Long id, @RequestBody AnnouncementDto announcementDto) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return repo.findById(id)
+                .filter(a -> a.getUser().getUserId().equals(userId))
+                .map(existing -> {
+                    existing.setTitle(announcementDto.getTitle());
+                    existing.setContent(announcementDto.getContent());
+                    Announcement saved = repo.save(existing);
+                    return ResponseEntity.ok(DtoMapper.toDto(saved));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (!repo.existsById(id)) return ResponseEntity.notFound().build();
-        repo.deleteById(id);
-        return ResponseEntity.noContent().build();
+        Long userId = SecurityUtil.getCurrentUserId();
+        return repo.findById(id)
+                .filter(a -> a.getUser().getUserId().equals(userId))
+                .map(a -> {
+                    repo.deleteById(id);
+                    return ResponseEntity.noContent().<Void>build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

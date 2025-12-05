@@ -1,31 +1,30 @@
-const BASE = 'http://localhost:8080/api'
+import apiClient from '../lib/apiClient.js'
 
-export async function getTasks(userId) {
-  const query = userId ? `?userId=${userId}` : ''
-  const r = await fetch(`${BASE}/tasks${query}`)
-  if (!r.ok) throw new Error('Failed to load tasks')
-  return r.json()
+export async function getTasks() {
+  const response = await apiClient.get('/tasks')
+  return response.data
+}
+
+export async function getTask(id) {
+  const response = await apiClient.get(`/tasks/${id}`)
+  return response.data
 }
 
 export async function createTask(payload) {
-  const r = await fetch(`${BASE}/tasks`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-  if (!r.ok) throw new Error('Failed to create task')
-  return r.json()
+  const response = await apiClient.post('/tasks', payload)
+  return response.data
 }
 
 export async function updateTask(id, payload) {
-  const r = await fetch(`${BASE}/tasks/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-  if (!r.ok) throw new Error('Failed to update task')
-  return r.json()
+  const response = await apiClient.put(`/tasks/${id}`, payload)
+  return response.data
 }
 
 export async function deleteTask(id) {
-  const r = await fetch(`${BASE}/tasks/${id}`, { method:'DELETE' })
-  if (!r.ok) throw new Error('Failed to delete task')
+  await apiClient.delete(`/tasks/${id}`)
 }
 
 export async function completeTask(id) {
-  const r = await fetch(`${BASE}/tasks/${id}/complete`, { method:'PUT' })
-  if (!r.ok) throw new Error('Failed to complete task')
-  return r.json()
+  const response = await apiClient.patch(`/tasks/${id}/complete`)
+  return response.data
 }

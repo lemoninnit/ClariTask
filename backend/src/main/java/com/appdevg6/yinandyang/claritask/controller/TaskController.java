@@ -3,9 +3,16 @@ package com.appdevg6.yinandyang.claritask.controller;
 import com.appdevg6.yinandyang.claritask.dto.TaskDto;
 import com.appdevg6.yinandyang.claritask.dto.DtoMapper;
 import com.appdevg6.yinandyang.claritask.entity.Task;
+import com.appdevg6.yinandyang.claritask.entity.User;
+import com.appdevg6.yinandyang.claritask.entity.Announcement;
+import com.appdevg6.yinandyang.claritask.repository.UserRepository;
+import com.appdevg6.yinandyang.claritask.repository.CategoryRepository;
+import com.appdevg6.yinandyang.claritask.repository.AnnouncementRepository;
 import com.appdevg6.yinandyang.claritask.service.TaskService;
+import com.appdevg6.yinandyang.claritask.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,54 +20,144 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService service;
-    public TaskController(TaskService service) { this.service = service; }
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final AnnouncementRepository announcementRepository;
+
+    public TaskController(TaskService service, UserRepository userRepository, CategoryRepository categoryRepository, AnnouncementRepository announcementRepository) {
+        this.service = service;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
+        this.announcementRepository = announcementRepository;
+    }
 
     @GetMapping
-    public List<TaskDto> all(@RequestParam(required = false) Long userId) {
-        return (userId != null ? service.byUser(userId) : service.all())
+    public List<TaskDto> all() {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.byUser(userId)
                 .stream()
                 .map(DtoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> create(@RequestBody Task t) {
-        Task saved = service.create(t);
+    public ResponseEntity<TaskDto> create(@RequestBody TaskDto taskDto) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow();
+        
+        Task task = new Task();
+        task.setTitle(taskDto.getTitle());
+        task.setDescription(taskDto.getDescription());
+        task.setDueDate(taskDto.getDueDate());
+        task.setStatus(taskDto.getStatus() != null ? taskDto.getStatus() : "pending");
+        task.setUser(user);
+        
+        if (taskDto.getCategoryId() != null) {
+            categoryRepository.findById(taskDto.getCategoryId())
+                    .ifPresent(task::setCategory);
+        }
+        
+        Task saved = service.create(task);
+        
+        // Create notification for task creation
+        Announcement notification = new Announcement();
+        notification.setTitle("New Task Created");
+        notification.setContent("Task \"" + saved.getTitle() + "\" has been created.");
+        notification.setUser(user);
+        notification.setTask(saved);
+        notification.setNotificationType("task_created");
+        announcementRepository.save(notification);
+        
         return ResponseEntity.ok(DtoMapper.toDto(saved));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> get(@PathVariable Long id) {
-        return service.get(id).map(entity -> ResponseEntity.ok(DtoMapper.toDto(entity))).orElseGet(() -> ResponseEntity.notFound().build());
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.get(id)
+                .filter(task -> task.getUser().getUserId().equals(userId))
+                .map(entity -> ResponseEntity.ok(DtoMapper.toDto(entity)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> update(@PathVariable Long id, @RequestBody Task t) {
-        return service.get(id).map(existing -> {
-            existing.setTitle(t.getTitle());
-            existing.setDescription(t.getDescription());
-            existing.setDueDate(t.getDueDate());
-            existing.setDueTime(t.getDueTime());
-            existing.setStatus(t.getStatus());
-            existing.setCategory(t.getCategory());
-            Task saved = service.update(existing);
-            return ResponseEntity.ok(DtoMapper.toDto(saved));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<TaskDto> update(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.get(id)
+                .filter(task -> task.getUser().getUserId().equals(userId))
+                .map(existing -> {
+                    String oldStatus = existing.getStatus();
+                    existing.setTitle(taskDto.getTitle());
+                    existing.setDescription(taskDto.getDescription());
+                    existing.setDueDate(taskDto.getDueDate());
+                    existing.setStatus(taskDto.getStatus());
+                    
+                    if (taskDto.getCategoryId() != null) {
+                        categoryRepository.findById(taskDto.getCategoryId())
+                                .ifPresent(existing::setCategory);
+                    } else {
+                        existing.setCategory(null);
+                    }
+                    
+                    Task saved = service.update(existing);
+                    
+                    // Create notification for task update
+                    Announcement notification = new Announcement();
+                    notification.setTitle("Task Updated");
+                    notification.setContent("Task \"" + saved.getTitle() + "\" has been updated.");
+                    notification.setUser(userRepository.findById(userId).orElseThrow());
+                    notification.setTask(saved);
+                    notification.setNotificationType("task_updated");
+                    announcementRepository.save(notification);
+                    
+                    return ResponseEntity.ok(DtoMapper.toDto(saved));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.get(id).isEmpty()) return ResponseEntity.notFound().build();
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.get(id)
+                .filter(task -> task.getUser().getUserId().equals(userId))
+                .map(task -> {
+                    String taskTitle = task.getTitle();
+                    service.delete(id);
+                    
+                    // Create notification for task deletion
+                    Announcement notification = new Announcement();
+                    notification.setTitle("Task Deleted");
+                    notification.setContent("Task \"" + taskTitle + "\" has been deleted.");
+                    notification.setUser(userRepository.findById(userId).orElseThrow());
+                    notification.setNotificationType("task_deleted");
+                    announcementRepository.save(notification);
+                    
+                    return ResponseEntity.noContent().<Void>build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}/complete")
+    @PatchMapping("/{id}/complete")
     public ResponseEntity<TaskDto> complete(@PathVariable Long id) {
-        return service.get(id).map(existing -> {
-            existing.setStatus("completed");
-            Task saved = service.update(existing);
-            return ResponseEntity.ok(DtoMapper.toDto(saved));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.get(id)
+                .filter(task -> task.getUser().getUserId().equals(userId))
+                .map(existing -> {
+                    existing.setStatus("completed");
+                    Task saved = service.update(existing);
+                    
+                    // Create notification for task completion (expires in 7 days)
+                    Announcement notification = new Announcement();
+                    notification.setTitle("Task Completed ✓");
+                    notification.setContent("Task \"" + saved.getTitle() + "\" has been completed!");
+                    notification.setUser(userRepository.findById(userId).orElseThrow());
+                    notification.setTask(saved);
+                    notification.setNotificationType("task_completed");
+                    notification.setExpiresAt(LocalDateTime.now().plusDays(7));
+                    announcementRepository.save(notification);
+                    
+                    return ResponseEntity.ok(DtoMapper.toDto(saved));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

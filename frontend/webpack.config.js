@@ -58,6 +58,32 @@ export default {
     static: {
       directory: path.resolve(__dirname),
     },
-    open: true,
+    open: false,
+    hot: true,
+    compress: true,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
+    },
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          priority: 10,
+        },
+      },
+    },
+  },
+  performance: {
+    hints: false,
+  },
+  cache: {
+    type: 'filesystem',
   },
 }
