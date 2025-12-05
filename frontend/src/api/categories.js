@@ -1,13 +1,20 @@
-const BASE = 'http://localhost:8080/api'
+import apiClient from '../lib/apiClient.js'
 
-export async function getCategories(userId) {
-  const r = await fetch(`${BASE}/categories?userId=${userId}`)
-  if (!r.ok) throw new Error('Failed to load categories')
-  return r.json()
+export async function getCategories() {
+  const response = await apiClient.get('/categories')
+  return response.data
 }
 
-export async function createCategory(userId, payload) {
-  const r = await fetch(`${BASE}/categories?userId=${userId}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-  if (!r.ok) throw new Error('Failed to create category')
-  return r.json()
+export async function createCategory(payload) {
+  const response = await apiClient.post('/categories', payload)
+  return response.data
+}
+
+export async function updateCategory(id, payload) {
+  const response = await apiClient.put(`/categories/${id}`, payload)
+  return response.data
+}
+
+export async function deleteCategory(id) {
+  await apiClient.delete(`/categories/${id}`)
 }

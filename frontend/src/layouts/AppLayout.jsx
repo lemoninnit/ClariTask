@@ -1,51 +1,139 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
-import { Cog, Moon } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function AppLayout({ children }) {
-  const [dark, setDark] = useState(() => localStorage.getItem('ct_theme') === 'dark')
-  const toggleTheme = () => {
-    const next = !dark
-    setDark(next)
-    localStorage.setItem('ct_theme', next ? 'dark' : 'light')
-  }
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
   const [mobile, setMobile] = useState(false)
+  
   useEffect(() => {
     const apply = () => setMobile(window.innerWidth < 900)
     apply()
     window.addEventListener('resize', apply)
     return () => window.removeEventListener('resize', apply)
   }, [])
+  
+  const userName = user?.userDto?.name || user?.name || 'User'
+  
   const s = {
-    shell: { display:'grid', gridTemplateColumns: mobile ? '200px 1fr' : '260px 1fr', minHeight:'100vh', background:'#f5f7f8' },
-    content: { display:'flex', flexDirection:'column' },
-    header: { borderBottom:'1px solid #e5e7eb', background:'#fff' },
-    headerWrap: { display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px' },
-    greeting: { fontWeight:600, color:'#334155' },
-    actions: { display:'inline-flex', alignItems:'center', gap:16 },
-    iconBtn: { display:'inline-flex', alignItems:'center', justifyContent:'center', width:36, height:36, borderRadius:999, border:'1px solid #e5e7eb', background:'#fff' },
-    profileLink: { display:'inline-flex', alignItems:'center', gap:8, padding:'8px 12px', background:'#3f5d2a', borderRadius:999, color:'#fff' },
-    avatar: { width:28, height:28, borderRadius:999, background:'#27431b', color:'#fff' },
-    logoutBtn: { background:'#3f5d2a', color:'#fff', padding:'8px 12px', border:'none', borderRadius:10 },
-    main: { flex:1, padding: mobile ? 12 : 20 }
+    shell: { 
+      display: 'grid', 
+      gridTemplateColumns: mobile ? '200px 1fr' : '260px 1fr', 
+      minHeight: '100vh', 
+      background: '#f5f7f8' 
+    },
+    content: { 
+      display: 'flex', 
+      flexDirection: 'column',
+      overflow: 'auto'
+    },
+    header: { 
+      borderBottom: '1px solid #e5e7eb', 
+      background: '#fff',
+      position: 'sticky',
+      top: 0,
+      zIndex: 10,
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+    },
+    headerWrap: { 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'space-between', 
+      padding: '16px 24px' 
+    },
+    greeting: { 
+      fontWeight: 600, 
+      color: '#334155',
+      fontSize: 16
+    },
+    actions: { 
+      display: 'inline-flex', 
+      alignItems: 'center', 
+      gap: 12 
+    },
+    profileLink: { 
+      display: 'inline-flex', 
+      alignItems: 'center', 
+      gap: 8, 
+      padding: '8px 16px', 
+      background: '#3f5d2a', 
+      borderRadius: 999, 
+      color: '#fff',
+      cursor: 'pointer',
+      textDecoration: 'none',
+      fontSize: 14,
+      fontWeight: 500,
+      transition: 'all 0.2s',
+      border: 'none'
+    },
+    avatar: { 
+      width: 28, 
+      height: 28, 
+      borderRadius: 999, 
+      background: 'rgba(255, 255, 255, 0.2)', 
+      color: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontWeight: 600,
+      fontSize: 12
+    },
+    logoutBtn: { 
+      background: '#dc2626', 
+      color: '#fff', 
+      padding: '8px 16px', 
+      border: 'none', 
+      borderRadius: 8,
+      cursor: 'pointer',
+      fontSize: 14,
+      fontWeight: 600,
+      transition: 'all 0.2s'
+    },
+    main: { 
+      flex: 1, 
+      padding: mobile ? 16 : 24,
+      overflow: 'auto'
+    }
   }
+  
   return (
     <div style={s.shell}>
       <Sidebar />
       <div style={s.content}>
         <header style={s.header}>
           <div style={s.headerWrap}>
-            <div style={s.greeting}>Welcome 👋</div>
+            <div style={s.greeting}>
+              Welcome {userName} 👋
+            </div>
             <div style={s.actions}>
-              <button style={s.iconBtn} title="Settings"><Cog size={18} color="#334155" /></button>
-              <button style={s.iconBtn} onClick={toggleTheme} title="Toggle theme"><Moon size={18} color="#334155" /></button>
-              <a href="/profile" style={s.profileLink}>
-                <span style={s.avatar}></span>
+              <button 
+                onClick={() => navigate('/profile')} 
+                style={s.profileLink}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)'
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(63, 93, 42, 0.3)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              >
+                <span style={s.avatar}>{userName?.[0]?.toUpperCase() || 'U'}</span>
                 <span>Profile</span>
-              </a>
+              </button>
               <button
                 style={s.logoutBtn}
-                onClick={() => { localStorage.removeItem('ct_user'); window.location.href = '/login' }}
+                onClick={logout}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#b91c1c'
+                  e.currentTarget.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#dc2626'
+                  e.currentTarget.style.transform = 'scale(1)'
+                }}
               >
                 LOGOUT
               </button>

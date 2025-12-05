@@ -12,6 +12,8 @@ public class AnnouncementDto {
     private String taskTitle;
     private LocalDateTime taskDueAt;
     private String taskCategoryName;
+    private String notificationType;
+    private LocalDateTime expiresAt;
 
     public Long getAnnouncementId() { return announcementId; }
     public void setAnnouncementId(Long announcementId) { this.announcementId = announcementId; }
@@ -31,4 +33,8 @@ public class AnnouncementDto {
     public void setTaskDueAt(LocalDateTime taskDueAt) { this.taskDueAt = taskDueAt; }
     public String getTaskCategoryName() { return taskCategoryName; }
     public void setTaskCategoryName(String taskCategoryName) { this.taskCategoryName = taskCategoryName; }
+    public String getNotificationType() { return notificationType; }
+    public void setNotificationType(String notificationType) { this.notificationType = notificationType; }
+    public LocalDateTime getExpiresAt() { return expiresAt; }
+    public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
 }

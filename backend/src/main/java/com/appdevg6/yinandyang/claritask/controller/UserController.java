@@ -4,48 +4,47 @@ import com.appdevg6.yinandyang.claritask.dto.UserDto;
 import com.appdevg6.yinandyang.claritask.dto.DtoMapper;
 import com.appdevg6.yinandyang.claritask.entity.User;
 import com.appdevg6.yinandyang.claritask.service.UserService;
+import com.appdevg6.yinandyang.claritask.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService service;
-    public UserController(UserService service) { this.service = service; }
+    private final PasswordEncoder passwordEncoder;
 
-    @GetMapping
-    public List<UserDto> all() { return service.all().stream().map(DtoMapper::toDto).collect(Collectors.toList()); }
-
-    @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody User u) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        u.setPassword(encoder.encode(u.getPassword()));
-        User saved = service.create(u);
-        return ResponseEntity.ok(DtoMapper.toDto(saved));
+    public UserController(UserService service, PasswordEncoder passwordEncoder) {
+        this.service = service;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody User u) {
-        return service.get(id).map(existing -> {
-            existing.setName(u.getName());
-            existing.setEmail(u.getEmail());
-            if (u.getPassword() != null && !u.getPassword().isBlank()) {
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                existing.setPassword(encoder.encode(u.getPassword()));
-            }
-            existing.setRole(u.getRole());
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getCurrentUser() {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.get(userId)
+                .map(DtoMapper::toDto)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserDto> updateCurrentUser(@RequestBody UserDto userDto) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return service.get(userId).map(existing -> {
+            if (userDto.getName() != null) existing.setName(userDto.getName());
+            if (userDto.getEmail() != null) existing.setEmail(userDto.getEmail());
             User saved = service.update(existing);
             return ResponseEntity.ok(DtoMapper.toDto(saved));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.get(id).isEmpty()) return ResponseEntity.notFound().build();
-        service.delete(id);
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteCurrentUser() {
+        Long userId = SecurityUtil.getCurrentUserId();
+        if (service.get(userId).isEmpty()) return ResponseEntity.notFound().build();
+        service.delete(userId);
         return ResponseEntity.noContent().build();
     }
 }

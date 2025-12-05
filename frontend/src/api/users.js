@@ -1,7 +1,15 @@
-const BASE = 'http://localhost:8080/api'
+import apiClient from '../lib/apiClient.js'
 
-export async function updateUser(id, payload) {
-  const r = await fetch(`${BASE}/users/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-  if (!r.ok) throw new Error('Failed to update user')
-  return r.json()
+export async function getCurrentUser() {
+  const response = await apiClient.get('/users/me')
+  return response.data
+}
+
+export async function updateCurrentUser(payload) {
+  const response = await apiClient.put('/users/me', payload)
+  return response.data
+}
+
+export async function deleteCurrentUser() {
+  await apiClient.delete('/users/me')
 }

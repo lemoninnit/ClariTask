@@ -1,101 +1,88 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Card from './Card'
-import { getAnnouncements, createAnnouncement } from '../api/announcements'
-import { getTasks } from '../api/tasks'
+import { deleteAnnouncement } from '../api/announcements'
+import { useAuth } from '../contexts/AuthContext'
+import { Trash2 } from 'lucide-react'
 
-export default function AnnouncementCard() {
-  const [items, setItems] = useState([])
-  const [tasks, setTasks] = useState([])
-  const [selectedTaskId, setSelectedTaskId] = useState('')
-  const [message, setMessage] = useState('')
-  const [submitting, setSubmitting] = useState(false)
+export default function AnnouncementCard({ announcement, onDelete }) {
+  const { user, isTeacher } = useAuth()
+  const isOwner = user?.userId === announcement.userId
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('ct_user') || 'null')
-    if (!user) return
-    ;(async () => {
-      try {
-        const [a, t] = await Promise.all([
-          getAnnouncements(user.userId),
-          getTasks(user.userId),
-        ])
-        setItems(a)
-        setTasks(t)
-      } catch {
-        setItems([])
-        setTasks([])
-      }
-    })()
-  }, [])
-
-  const onCreate = async (e) => {
-    e.preventDefault()
-    const user = JSON.parse(localStorage.getItem('ct_user') || 'null')
-    if (!user || !selectedTaskId || !message.trim()) return
-    setSubmitting(true)
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this announcement?')) {
+      return
+    }
     try {
-      const task = tasks.find(t => t.taskId === Number(selectedTaskId))
-      const payload = {
-        title: task ? `Update: ${task.title}` : 'Task update',
-        content: message,
-      }
-      const saved = await createAnnouncement(user.userId, payload, Number(selectedTaskId))
-      setItems(prev => [saved, ...prev])
-      setMessage('')
-      setSelectedTaskId('')
-    } finally {
-      setSubmitting(false)
+      await deleteAnnouncement(announcement.announcementId)
+      if (onDelete) onDelete()
+    } catch (error) {
+      alert('Failed to delete announcement')
     }
   }
 
-  return (
-    <Card title="Announcement">
-      {items.length === 0 ? (
-        <div style={{ color:'#64748b', marginBottom:12 }}>Nothing so far...</div>
-      ) : (
-        <div style={{ display:'grid', gap:8, marginBottom:12 }}>
-          {items.map(a => (
-            <div key={a.announcementId} style={{ padding:12, border:'1px solid #e5e7eb', borderRadius:8 }}>
-              <div style={{ fontWeight:700 }}>{a.title}</div>
-              {a.taskTitle && (
-                <div style={{ color:'#6b7280', fontSize:12, marginBottom:4 }}>
-                  Task: {a.taskTitle}
-                  {a.taskCategoryName ? ` · ${a.taskCategoryName}` : ''}
-                </div>
-              )}
-              <div style={{ color:'#64748b' }}>{a.content}</div>
-            </div>
-          ))}
-        </div>
-      )}
+  const formatDate = (dateString) => {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
 
-      <form onSubmit={onCreate} style={{ display:'grid', gridTemplateColumns:'2fr 2fr auto', gap:8 }}>
-        <select
-          value={selectedTaskId}
-          onChange={(e) => setSelectedTaskId(e.target.value)}
-          style={{ padding:8, border:'1px solid #e5e7eb', borderRadius:8 }}
-        >
-          <option value="">Link to task...</option>
-          {tasks.map(t => (
-            <option key={t.taskId} value={t.taskId}>
-              {t.title}
-            </option>
-          ))}
-        </select>
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Announcement message"
-          style={{ padding:8, border:'1px solid #e5e7eb', borderRadius:8 }}
-        />
-        <button
-          type="submit"
-          disabled={submitting || !selectedTaskId || !message.trim()}
-          style={{ padding:'8px 12px', borderRadius:8, border:'none', background:'#3f5d2a', color:'#fff', fontWeight:600 }}
-        >
-          Post
-        </button>
-      </form>
+  return (
+    <Card>
+      <div style={{ position: 'relative' }}>
+        {(isTeacher && isOwner) && (
+          <button
+            onClick={handleDelete}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              background: 'none',
+              border: 'none',
+              color: '#ef4444',
+              cursor: 'pointer',
+              padding: '4px'
+            }}
+          >
+            <Trash2 size={18} />
+          </button>
+        )}
+        
+        <div style={{ marginBottom: '8px' }}>
+          <h3 style={{ fontWeight: 700, fontSize: '18px', color: '#0f172a', marginBottom: '4px' }}>
+            {announcement.title}
+          </h3>
+          {announcement.createdAt && (
+            <div style={{ color: '#6b7280', fontSize: '12px' }}>
+              {formatDate(announcement.createdAt)}
+            </div>
+          )}
+        </div>
+
+        {announcement.taskTitle && (
+          <div style={{ 
+            display: 'inline-block',
+            padding: '4px 8px',
+            background: '#eff6ff',
+            color: '#1e40af',
+            borderRadius: '4px',
+            fontSize: '12px',
+            marginBottom: '8px'
+          }}>
+            Task: {announcement.taskTitle}
+            {announcement.taskCategoryName && ` · ${announcement.taskCategoryName}`}
+          </div>
+        )}
+
+        <div style={{ color: '#374151', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+          {announcement.content}
+        </div>
+      </div>
     </Card>
   )
 }
