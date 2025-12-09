@@ -61,9 +61,33 @@ export default function Tasks() {
         setEditingTask(task)
         setTitle(task.title)
         setDescription(task.description || '')
-        const date = new Date(task.dueDate)
-        setDueDate(date.toISOString().split('T')[0])
-        setDueTime(date.toTimeString().split(' ')[0].substring(0, 5))
+        
+        // Safely parse date with error handling
+        if (task.dueDate) {
+          try {
+            const date = new Date(task.dueDate)
+            if (!isNaN(date.getTime())) {
+              setDueDate(date.toISOString().split('T')[0])
+              setDueTime(date.toTimeString().split(' ')[0].substring(0, 5))
+            } else {
+              // Invalid date, set to today
+              const today = new Date()
+              setDueDate(today.toISOString().split('T')[0])
+              setDueTime(today.toTimeString().split(' ')[0].substring(0, 5))
+            }
+          } catch (e) {
+            // Date parsing failed, set to today
+            const today = new Date()
+            setDueDate(today.toISOString().split('T')[0])
+            setDueTime(today.toTimeString().split(' ')[0].substring(0, 5))
+          }
+        } else {
+          // No due date, set to today
+          const today = new Date()
+          setDueDate(today.toISOString().split('T')[0])
+          setDueTime(today.toTimeString().split(' ')[0].substring(0, 5))
+        }
+        
         setStatus(task.status)
         setCategoryId(task.categoryId || '')
         setShowForm(true)

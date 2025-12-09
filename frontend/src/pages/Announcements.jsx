@@ -32,7 +32,15 @@ export default function Announcements() {
       const now = new Date()
       const validAnnouncements = announcementsData.filter(ann => {
         if (ann.expiresAt) {
-          return new Date(ann.expiresAt) > now
+          try {
+            const expiryDate = new Date(ann.expiresAt)
+            if (isNaN(expiryDate.getTime())) {
+              return true // Keep if date is invalid
+            }
+            return expiryDate > now
+          } catch {
+            return true // Keep if parsing fails
+          }
         }
         return true
       })
@@ -43,31 +51,38 @@ export default function Announcements() {
         if (task.status === 'completed') return
         
         if (task.dueDate) {
-          const dueDate = new Date(task.dueDate)
-          const hoursUntilDue = (dueDate - now) / (1000 * 60 * 60)
-          
-          if (dueDate < now) {
-            // Overdue task
-            autoNotifications.push({
-              announcementId: `overdue_${task.taskId}`,
-              title: 'Task Overdue ⚠️',
-              content: `Task "${task.title}" is overdue.`,
-              taskTitle: task.title,
-              taskCategoryName: task.categoryName,
-              createdAt: dueDate.toISOString(),
-              notificationType: 'task_overdue'
-            })
-          } else if (hoursUntilDue <= 24 && hoursUntilDue > 0) {
-            // Due soon (within 24 hours)
-            autoNotifications.push({
-              announcementId: `due_soon_${task.taskId}`,
-              title: 'Task Due Soon ⏰',
-              content: `Task "${task.title}" is due within 24 hours.`,
-              taskTitle: task.title,
-              taskCategoryName: task.categoryName,
-              createdAt: new Date().toISOString(),
-              notificationType: 'task_due_soon'
-            })
+          try {
+            const dueDate = new Date(task.dueDate)
+            if (isNaN(dueDate.getTime())) {
+              return // Skip if date is invalid
+            }
+            const hoursUntilDue = (dueDate - now) / (1000 * 60 * 60)
+            
+            if (dueDate < now) {
+              // Overdue task
+              autoNotifications.push({
+                announcementId: `overdue_${task.taskId}`,
+                title: 'Task Overdue ⚠️',
+                content: `Task "${task.title}" is overdue.`,
+                taskTitle: task.title,
+                taskCategoryName: task.categoryName,
+                createdAt: dueDate.toISOString(),
+                notificationType: 'task_overdue'
+              })
+            } else if (hoursUntilDue <= 24 && hoursUntilDue > 0) {
+              // Due soon (within 24 hours)
+              autoNotifications.push({
+                announcementId: `due_soon_${task.taskId}`,
+                title: 'Task Due Soon ⏰',
+                content: `Task "${task.title}" is due within 24 hours.`,
+                taskTitle: task.title,
+                taskCategoryName: task.categoryName,
+                createdAt: new Date().toISOString(),
+                notificationType: 'task_due_soon'
+              })
+            }
+          } catch {
+            // Skip if date parsing fails
           }
         }
       })

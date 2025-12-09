@@ -15,6 +15,9 @@ public class CategoryService {
     public List<Category> all() { return categories.findAll(); }
     public List<Category> byUser(Long userId) { return categories.findByUserUserId(userId); }
     public Optional<Category> get(Long id) { return categories.findById(id); }
+    public Optional<Category> findByUserAndNameIgnoreCase(Long userId, String name) {
+        return categories.findByUserAndNameIgnoreCase(userId, name);
+    }
     public Category create(Category c) { return categories.save(c); }
     public Category update(Category c) { return categories.save(c); }
     public void delete(Long id) { categories.deleteById(id); }

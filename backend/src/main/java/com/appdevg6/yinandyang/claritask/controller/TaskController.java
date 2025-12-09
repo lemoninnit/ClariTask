@@ -52,9 +52,11 @@ public class TaskController {
         task.setStatus(taskDto.getStatus() != null ? taskDto.getStatus() : "pending");
         task.setUser(user);
         
-        if (taskDto.getCategoryId() != null) {
+        if (taskDto.getCategoryId() != null && taskDto.getCategoryId() > 0) {
             categoryRepository.findById(taskDto.getCategoryId())
                     .ifPresent(task::setCategory);
+        } else {
+            task.setCategory(null);
         }
         
         Task saved = service.create(task);
