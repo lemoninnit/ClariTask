@@ -24,6 +24,9 @@ export default function TaskItem({ title, dueDate, status, categoryName, taskId,
     if (!dateTimeStr) return '—'
     try {
       const date = new Date(dateTimeStr)
+      if (isNaN(date.getTime())) {
+        return dateTimeStr // Return original if invalid
+      }
       return date.toLocaleString('en-US', {
         month: 'short',
         day: 'numeric',

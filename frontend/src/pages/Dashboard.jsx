@@ -44,19 +44,57 @@ export default function Dashboard() {
       await loadData()
     } catch (error) {
       console.error('Failed to create category:', error)
-      alert('Failed to create category')
+      // Extract error message from backend response
+      let errorMessage = 'Failed to create category'
+      if (error.response && error.response.data) {
+        if (typeof error.response.data === 'string') {
+          try {
+            const parsed = JSON.parse(error.response.data)
+            errorMessage = parsed.message || errorMessage
+          } catch {
+            errorMessage = error.response.data
+          }
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      alert(errorMessage)
     }
   }
 
   const handleCategoryDeleted = (categoryId) => {
-    setCategories(prev => prev.filter(c => c.categoryId !== categoryId))
-    if (activeCategoryId === categoryId) {
+    // Normalize IDs for safe comparison before filtering
+    const normalizeId = (id) => id != null ? String(id) : null
+    const normalizedDeletedId = normalizeId(categoryId)
+    
+    setCategories(prev => prev.filter(c => {
+      const catId = normalizeId(c.categoryId)
+      return catId !== normalizedDeletedId
+    }))
+    
+    // Reset active category if the deleted one was active
+    const normalizedActiveId = normalizeId(activeCategoryId)
+    if (normalizedDeletedId === normalizedActiveId) {
       setActiveCategoryId(null)
     }
   }
 
-  const visibleTasks = activeCategoryId
-    ? tasks.filter(t => t.categoryId === activeCategoryId)
+  // Helper function to normalize IDs for comparison (handles both string and number)
+  const normalizeId = (id) => {
+    if (id == null) return null
+    return String(id)
+  }
+
+  // Filter tasks by category - handle type mismatch between string and number
+  const visibleTasks = activeCategoryId != null
+    ? tasks.filter(t => {
+        // Normalize both IDs to strings for safe comparison
+        const taskCategoryId = normalizeId(t.categoryId)
+        const activeId = normalizeId(activeCategoryId)
+        return taskCategoryId === activeId
+      })
     : tasks
 
   const completed = visibleTasks.filter(t => t.status === 'completed').length
@@ -68,8 +106,13 @@ export default function Dashboard() {
     if (!t.dueDate) return false
     try {
       const taskDate = new Date(t.dueDate)
+      if (isNaN(taskDate.getTime())) return false
+      
       const today = new Date()
-      return taskDate.toDateString() === today.toDateString()
+      // Compare year, month, and day only (ignore time)
+      return taskDate.getFullYear() === today.getFullYear() &&
+             taskDate.getMonth() === today.getMonth() &&
+             taskDate.getDate() === today.getDate()
     } catch {
       return false
     }
