@@ -132,7 +132,7 @@ export default function TaskItem({ title, dueDate, status, categoryName, taskId,
         </div>
         
         <div style={{ display: 'flex', gap: 8 }}>
-          {onEdit && (
+          {onEdit && status !== 'completed' && (
             <button 
               onClick={() => onEdit(taskId)}
               style={{ 

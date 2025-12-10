@@ -44,15 +44,24 @@ export default function Profile() {
   }
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete your account? This will permanently delete all your tasks, categories, and announcements. This action cannot be undone.')) {
       return
     }
     
+    setLoading(true)
+    setError('')
+    
     try {
       await deleteCurrentUser()
+      // Clear local storage and redirect
+      localStorage.removeItem('ct_user')
+      localStorage.removeItem('ct_token')
       window.location.href = '/login'
     } catch (err) {
-      alert('Failed to delete account')
+      console.error('Delete account error:', err)
+      const errorMessage = err.message || err.response?.data?.message || 'Failed to delete account'
+      setError(errorMessage)
+      setLoading(false)
     }
   }
 

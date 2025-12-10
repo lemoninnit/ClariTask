@@ -20,4 +20,7 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     @Transactional
     @Query("DELETE FROM Announcement a WHERE a.expiresAt IS NOT NULL AND a.expiresAt <= :now")
     void deleteExpiredNotifications(@Param("now") LocalDateTime now);
+    
+    @Query("SELECT a FROM Announcement a WHERE a.task IS NOT NULL AND a.task.taskId = :taskId")
+    List<Announcement> findByTaskId(@Param("taskId") Long taskId);
 }

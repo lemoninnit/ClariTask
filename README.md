@@ -67,137 +67,113 @@ ClariTask/
 - **Frontend won't start:** Run `npm install` in `frontend/` directory
 
 
-## Recent ClariTask — Feature list
-# Authentication & user management
-- User registration (name, email, password, role)
-- User login with JWT authentication
-- Secure password hashing (BCrypt)
-- User profile management
--- View profile information
--- Update name and email
--- Delete account
-- Role-based system (student/teacher) with unified privileges
-- Protected routes (authentication required)
-- JWT token-based session management
-# Task management
-- Create tasks
--- Title, description
--- Due date and time (LocalDateTime)
--- Status (pending, in_progress, completed)
--- Category assignment
-- Edit tasks
-- Delete tasks
-- Mark tasks as complete
-- View all tasks
-- Task status tracking
--- Pending
--- In Progress
--- Completed
-- Task filtering by category
-- Task search functionality
-# Category management
-- Create custom categories
-- Edit category names
-- Delete categories (with trash icon)
-- Assign categories to tasks
-- Filter tasks by category
-- Visual category chips with colors
-- Category-based task organization
-# Calendar view
-- Monthly calendar display
-- Task deadlines shown on calendar dates
-- Time display for each task
-- Click date to view tasks for that day
-- Navigate between months
-- Color-coded task status indicators
-- Today highlighting
-- Task details sidebar when date is selected
-- Full-width responsive layout
-# Notification center
-- Real-time notification system
-- Automatic notifications for:
--- Task created
--- Task updated
--- Task completed (expires after 7 days)
--- Task deleted
--- Category created
--- Category deleted
--- Task overdue (automatic detection)
--- Task due soon (within 24 hours)
-- Manual announcements
-- Color-coded notification types
-- Icon-based notification display
-- Relative timestamps (e.g., "2h ago", "3d ago")
-- Auto-cleanup of expired notifications (7-day expiration)
-- Sorted by most recent
-- Notification refresh every 60 seconds
-# Dashboard
-- Welcome card with personalized greeting
-- Statistics cards showing:
--- Total tasks
--- Completed tasks
--- Pending tasks
--- In Progress tasks
-- Today's tasks display
-- Category sidebar with filtering
-- Quick task overview
-- Quick action buttons
-# Announcements
-- Create announcements (all users)
-- View all announcements
-- Edit own announcements
-- Delete own announcements
-- Link announcements to tasks
-- Notification center integration
-# UI/UX features
-- Responsive design (desktop, tablet, mobile)
-- Modern UI with animations
--- Smooth transitions
--- Hover effects
--- Fade-in animations
--- Scale animations
-- Consistent color theme (green-based)
-- Soft shadows and depth
-- Clean, professional layout
-- Landing page with feature highlights
-- Sidebar navigation
-- Header with user info
-- Loading states
-- Error handling and user feedback
-# Backend features
-- RESTful API architecture
-- Spring Boot backend
-- MySQL database integration
-- JPA/Hibernate ORM
-- Spring Security with JWT
-- CORS configuration
-- Automatic database schema creation
-- Scheduled tasks (notification cleanup)
-- File upload support (attachments)
-- Data validation
-- Error handling
-# Security features
-- JWT token authentication
-- Password encryption (BCrypt)
-- Secure API endpoints
-- User-specific data isolation
-- Protected routes
-- CORS protection
-- Input validation
-# Data management
-- Persistent data storage (MySQL)
-- Automatic database migrations
-- User-specific data (tasks, categories, announcements)
-- Data relationships (User → Tasks, Categories, Announcements)
-- Soft delete capabilities
-- Data filtering and querying
-# Additional features
-- Landing page with app introduction
-- Footer with links and information
-- Responsive navigation
-- Real-time data updates
-- Auto-refresh functionality
-- Task time tracking
-- Status-based color coding
-- Category-based organization
-- Search and filter capabilities
+## Feature List
+
+### Frontend Features
+
+| Feature | Progress |
+|---------|----------|
+| **Authentication & User Management** | |
+| Login Page | ✅ Complete |
+| Signup Page | ✅ Complete |
+| JWT Token Management | ✅ Complete |
+| Protected Routes | ✅ Complete |
+| User Profile Page | ✅ Complete |
+| Account Deletion UI | ✅ Complete |
+| **Task Management** | |
+| Task Creation Form | ✅ Complete |
+| Task Edit Form | ✅ Complete |
+| Task Delete Functionality | ✅ Complete |
+| Task Complete Button | ✅ Complete |
+| Task List Display | ✅ Complete |
+| Task Status Display | ✅ Complete |
+| Task Filtering by Category | ✅ Complete |
+| Task Due Date & Time Input | ✅ Complete |
+| **Category Management** | |
+| Category Creation | ✅ Complete |
+| Category Edit | ✅ Complete |
+| Category Delete with Trash Icon | ✅ Complete |
+| Category Assignment to Tasks | ✅ Complete |
+| Category Filtering | ✅ Complete |
+| Category Chips Display | ✅ Complete |
+| **Calendar View** | |
+| Monthly Calendar Component | ✅ Complete |
+| Task Deadlines on Calendar | ✅ Complete |
+| Date Navigation | ✅ Complete |
+| Task Details Sidebar | ✅ Complete |
+| Full-width Responsive Layout | ✅ Complete |
+| **Notification Center** | |
+| Notification Display Page | ✅ Complete |
+| Real-time Notification Updates | ✅ Complete |
+| Notification Icons & Colors | ✅ Complete |
+| Manual Announcement Creation | ✅ Complete |
+| Notification Timestamps | ✅ Complete |
+| **Dashboard** | |
+| Welcome Card Component | ✅ Complete |
+| Statistics Cards (Completed, Pending, In Progress, Total) | ✅ Complete |
+| Today's Tasks Display | ✅ Complete |
+| Category Sidebar | ✅ Complete |
+| Task Overview Cards | ✅ Complete |
+| **UI/UX** | |
+| Responsive Design (Mobile, Tablet, Desktop) | ✅ Complete |
+| Modern CSS Animations | ✅ Complete |
+| Hover Effects & Transitions | ✅ Complete |
+| Consistent Color Theme | ✅ Complete |
+| Loading States | ✅ Complete |
+| Error Handling & User Feedback | ✅ Complete |
+| Landing Page | ✅ Complete |
+| Sidebar Navigation | ✅ Complete |
+| Header with User Info | ✅ Complete |
+
+### Backend Features
+
+| Feature | Progress |
+|---------|----------|
+| **Authentication & Security** | |
+| User Registration API | ✅ Complete |
+| JWT Login API | ✅ Complete |
+| Password Encryption (BCrypt) | ✅ Complete |
+| Spring Security Configuration | ✅ Complete |
+| JWT Token Generation & Validation | ✅ Complete |
+| User Authentication Filter | ✅ Complete |
+| **Task Management API** | |
+| Create Task Endpoint | ✅ Complete |
+| Update Task Endpoint | ✅ Complete |
+| Delete Task Endpoint | ✅ Complete |
+| Get Tasks by User | ✅ Complete |
+| Complete Task Endpoint | ✅ Complete |
+| Task Status Management | ✅ Complete |
+| LocalDateTime Handling | ✅ Complete |
+| Task-Category Relationship | ✅ Complete |
+| **Category Management API** | |
+| Create Category Endpoint | ✅ Complete |
+| Update Category Endpoint | ✅ Complete |
+| Delete Category Endpoint | ✅ Complete |
+| Get Categories by User | ✅ Complete |
+| Category Validation | ✅ Complete |
+| Foreign Key Constraint Handling | ✅ Complete |
+| **User Management API** | |
+| Get Current User | ✅ Complete |
+| Update User Profile | ✅ Complete |
+| Delete User Account | ✅ Complete |
+| Cascading Delete for User Data | ✅ Complete |
+| **Notification System** | |
+| Automatic Notification Creation | ✅ Complete |
+| Notification Types (task_created, task_completed, etc.) | ✅ Complete |
+| Notification Expiration (7-day cleanup) | ✅ Complete |
+| Scheduled Notification Cleanup | ✅ Complete |
+| Manual Announcement API | ✅ Complete |
+| **Database & Data Management** | |
+| MySQL Database Integration | ✅ Complete |
+| JPA/Hibernate ORM | ✅ Complete |
+| Entity Relationships | ✅ Complete |
+| Foreign Key Management | ✅ Complete |
+| Cascade Delete Configuration | ✅ Complete |
+| Transaction Management | ✅ Complete |
+| **API Architecture** | |
+| RESTful API Design | ✅ Complete |
+| CORS Configuration | ✅ Complete |
+| Error Handling | ✅ Complete |
+| Data Validation | ✅ Complete |
+| DTO Mapping | ✅ Complete |
+| Repository Pattern | ✅ Complete |

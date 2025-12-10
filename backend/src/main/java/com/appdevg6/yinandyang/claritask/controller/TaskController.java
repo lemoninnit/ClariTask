@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @RestController
@@ -118,23 +120,35 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         Long userId = SecurityUtil.getCurrentUserId();
         return service.get(id)
                 .filter(task -> task.getUser().getUserId().equals(userId))
                 .map(task -> {
-                    String taskTitle = task.getTitle();
-                    service.delete(id);
-                    
-                    // Create notification for task deletion
-                    Announcement notification = new Announcement();
-                    notification.setTitle("Task Deleted");
-                    notification.setContent("Task \"" + taskTitle + "\" has been deleted.");
-                    notification.setUser(userRepository.findById(userId).orElseThrow());
-                    notification.setNotificationType("task_deleted");
-                    announcementRepository.save(notification);
-                    
-                    return ResponseEntity.noContent().<Void>build();
+                    try {
+                        String taskTitle = task.getTitle();
+                        
+                        // Delete all announcements related to this task first
+                        List<Announcement> taskAnnouncements = announcementRepository.findByTaskId(id);
+                        taskAnnouncements.forEach(announcementRepository::delete);
+                        
+                        // Delete the task (attachments will be cascade deleted)
+                        service.delete(id);
+                        
+                        // Create notification for task deletion
+                        Announcement notification = new Announcement();
+                        notification.setTitle("Task Deleted");
+                        notification.setContent("Task \"" + taskTitle + "\" has been deleted.");
+                        notification.setUser(userRepository.findById(userId).orElseThrow());
+                        notification.setNotificationType("task_deleted");
+                        announcementRepository.save(notification);
+                        
+                        return ResponseEntity.noContent().<Void>build();
+                    } catch (Exception e) {
+                        System.err.println("Error deleting task: " + e.getMessage());
+                        e.printStackTrace();
+                        return ResponseEntity.status(500).build();
+                    }
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

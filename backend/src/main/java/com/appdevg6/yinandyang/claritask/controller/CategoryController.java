@@ -243,23 +243,37 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         Long userId = SecurityUtil.getCurrentUserId();
         return service.get(id)
                 .filter(c -> c.getUser() != null && c.getUser().getUserId().equals(userId))
                 .map(c -> {
-                    String categoryName = c.getName();
-                    service.delete(id);
-                    
-                    // Create notification for category deletion
-                    Announcement notification = new Announcement();
-                    notification.setTitle("Category Deleted");
-                    notification.setContent("Category \"" + categoryName + "\" has been deleted.");
-                    notification.setUser(users.findById(userId).orElseThrow());
-                    notification.setNotificationType("category_deleted");
-                    announcementRepository.save(notification);
-                    
-                    return ResponseEntity.noContent().<Void>build();
+                    try {
+                        String categoryName = c.getName();
+                        
+                        // Set category to null for all tasks that reference this category
+                        // This prevents foreign key constraint violations
+                        service.removeCategoryFromTasks(id);
+                        
+                        // Now delete the category
+                        service.delete(id);
+                        
+                        // Create notification for category deletion
+                        Announcement notification = new Announcement();
+                        notification.setTitle("Category Deleted");
+                        notification.setContent("Category \"" + categoryName + "\" has been deleted.");
+                        notification.setUser(users.findById(userId).orElseThrow());
+                        notification.setNotificationType("category_deleted");
+                        announcementRepository.save(notification);
+                        
+                        return ResponseEntity.noContent().<Void>build();
+                    } catch (Exception e) {
+                        System.err.println("Error deleting category: " + e.getMessage());
+                        e.printStackTrace();
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("message", "Failed to delete category: " + e.getMessage());
+                        return ResponseEntity.status(500).body(errorResponse);
+                    }
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

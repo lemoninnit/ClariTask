@@ -52,7 +52,15 @@ export async function updateTask(id, payload) {
 }
 
 export async function deleteTask(id) {
-  await apiClient.delete(`/tasks/${id}`)
+  try {
+    await apiClient.delete(`/tasks/${id}`)
+  } catch (error) {
+    // Re-throw with a more descriptive message
+    if (error.response) {
+      throw new Error(error.response.data?.message || 'Failed to delete task')
+    }
+    throw error
+  }
 }
 
 export async function completeTask(id) {
