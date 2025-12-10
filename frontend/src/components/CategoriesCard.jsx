@@ -145,7 +145,7 @@ export default function CategoriesCard({ categories = [], activeCategoryId, onSe
   }
 
   const handleDelete = async (categoryId) => {
-    if (!window.confirm('Are you sure you want to delete this category?')) return
+    if (!window.confirm('Are you sure you want to delete this category? All tasks in this category will be uncategorized.')) return
     try {
       await deleteCategory(categoryId)
       if (onCategoryDeleted) {
@@ -153,7 +153,8 @@ export default function CategoriesCard({ categories = [], activeCategoryId, onSe
       }
     } catch (error) {
       console.error('Failed to delete category:', error)
-      alert('Failed to delete category')
+      const errorMessage = error.message || error.response?.data?.message || 'Failed to delete category'
+      alert(errorMessage)
     }
   }
 

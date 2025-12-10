@@ -88,7 +88,8 @@ export default function Tasks() {
           setDueTime(today.toTimeString().split(' ')[0].substring(0, 5))
         }
         
-        setStatus(task.status)
+        // Don't set status from task - status is managed by system
+        setStatus('pending') // Default for form, but won't be used when editing
         setCategoryId(task.categoryId || '')
         setShowForm(true)
       }
@@ -114,7 +115,8 @@ export default function Tasks() {
         title,
         description: description || '',
         dueDate: dueDateTime,
-        status,
+        // Status is system-managed: preserve existing status when editing, always 'pending' when creating
+        status: editingTask ? editingTask.status : 'pending',
         categoryId: categoryId ? Number(categoryId) : null,
       }
       
@@ -154,9 +156,13 @@ export default function Tasks() {
     if (!window.confirm('Are you sure you want to delete this task?')) return
     try {
       await deleteTask(taskId)
+      // Remove from local state immediately for better UX
+      setTasks(prev => prev.filter(t => t.taskId !== taskId))
+      // Reload to ensure sync with backend
       await loadData()
     } catch (error) {
-      alert('Failed to delete task')
+      console.error('Delete error:', error)
+      alert('Failed to delete task. Please try again.')
     }
   }
 
@@ -286,48 +292,27 @@ export default function Tasks() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>
-                    Status
-                  </label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px'
-                    }}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>
-                    Category
-                  </label>
-                  <select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px'
-                    }}
-                  >
-                    <option value="">No category</option>
-                    {categories.map((c) => (
-                      <option key={c.categoryId} value={c.categoryId}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>
+                  Category
+                </label>
+                <select
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
+                >
+                  <option value="">No category</option>
+                  {categories.map((c) => (
+                    <option key={c.categoryId} value={c.categoryId}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div style={{ display: 'flex', gap: '12px' }}>

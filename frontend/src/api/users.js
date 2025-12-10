@@ -11,5 +11,14 @@ export async function updateCurrentUser(payload) {
 }
 
 export async function deleteCurrentUser() {
-  await apiClient.delete('/users/me')
+  try {
+    await apiClient.delete('/users/me')
+  } catch (error) {
+    // Re-throw with a more descriptive message
+    if (error.response) {
+      const errorMessage = error.response.data?.message || 'Failed to delete account'
+      throw new Error(errorMessage)
+    }
+    throw error
+  }
 }

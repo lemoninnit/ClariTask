@@ -19,14 +19,14 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
       gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', 
       minHeight: '100vh',
       maxHeight: '100vh',
-      overflow: 'hidden',
+      overflow: 'visible',
       background: '#fff' 
     },
     left: { 
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center', 
-      padding: '40px 24px', 
+      padding: '20px 24px', 
       background: '#f7f7f7',
       overflowY: 'auto',
       overflowX: 'hidden'
@@ -40,7 +40,7 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
       fontWeight: 800, 
       fontSize: 28,
       color: '#3f5d2a', 
-      marginBottom: 24,
+      marginBottom: 16,
       cursor: 'pointer',
       textDecoration: 'none',
       display: 'inline-block',
@@ -50,7 +50,7 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
       fontSize: 36, 
       fontWeight: 800, 
       color: '#0f172a', 
-      margin: '0 0 8px 0',
+      margin: '0 0 20px 0',
       lineHeight: 1.2
     },
     subtitle: { 
@@ -63,12 +63,12 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
       border: '1px solid #e5e7eb', 
       borderRadius: 16, 
       boxShadow: '0 8px 24px rgba(16,24,40,0.06)', 
-      padding: 32 
+      padding: 24
     },
     form: { 
       display: 'flex', 
       flexDirection: 'column', 
-      gap: 16 
+      gap: 12
     },
     right: { 
       position: 'relative', 

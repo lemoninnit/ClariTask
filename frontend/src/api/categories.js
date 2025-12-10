@@ -38,5 +38,14 @@ export async function updateCategory(id, payload) {
 }
 
 export async function deleteCategory(id) {
-  await apiClient.delete(`/categories/${id}`)
+  try {
+    await apiClient.delete(`/categories/${id}`)
+  } catch (error) {
+    // Re-throw with a more descriptive message
+    if (error.response) {
+      const errorMessage = error.response.data?.message || 'Failed to delete category'
+      throw new Error(errorMessage)
+    }
+    throw error
+  }
 }

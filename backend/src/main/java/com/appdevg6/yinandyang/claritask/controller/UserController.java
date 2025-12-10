@@ -41,10 +41,20 @@ public class UserController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteCurrentUser() {
+    public ResponseEntity<?> deleteCurrentUser() {
         Long userId = SecurityUtil.getCurrentUserId();
-        if (service.get(userId).isEmpty()) return ResponseEntity.notFound().build();
-        service.delete(userId);
-        return ResponseEntity.noContent().build();
+        if (service.get(userId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        try {
+            // Delete user and all related data (cascade will handle it, but we ensure it's done properly)
+            service.delete(userId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 }

@@ -81,7 +81,7 @@ export default function AppLayout({ children }) {
       fontSize: 12
     },
     logoutBtn: { 
-      background: '#dc2626', 
+      background: '#3f5d2a', 
       color: '#fff', 
       padding: '8px 16px', 
       border: 'none', 
@@ -127,11 +127,11 @@ export default function AppLayout({ children }) {
                 style={s.logoutBtn}
                 onClick={logout}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#b91c1c'
+                  e.currentTarget.style.background = '#3f5d2a'
                   e.currentTarget.style.transform = 'scale(1.05)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#dc2626'
+                  e.currentTarget.style.background = '#3f5d2a'
                   e.currentTarget.style.transform = 'scale(1)'
                 }}
               >

@@ -97,10 +97,11 @@ export default function Dashboard() {
       })
     : tasks
 
-  const completed = visibleTasks.filter(t => t.status === 'completed').length
-  const pending = visibleTasks.filter(t => t.status === 'pending').length
-  const inProgress = visibleTasks.filter(t => t.status === 'in_progress').length
-  const total = visibleTasks.length
+  // Dashboard statistics should use ALL tasks, not filtered by category
+  const completed = tasks.filter(t => t.status === 'completed').length
+  const pending = tasks.filter(t => t.status === 'pending').length
+  const inProgress = tasks.filter(t => t.status === 'in_progress').length
+  const total = tasks.length
 
   const todayTasks = visibleTasks.filter(t => {
     if (!t.dueDate) return false
