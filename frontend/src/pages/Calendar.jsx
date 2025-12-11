@@ -540,11 +540,16 @@ export default function Calendar() {
                       style={{
                         border: isSelected ? '2px solid #3f5d2a' : '1px dashed #e5e7eb',
                         borderRadius: 8,
-                        minHeight: 100,
+                        minHeight: 120,
+                        height: 120,
                         background: !day ? '#f9fafb' : isToday ? '#f0fdf4' : '#fff',
                         padding: 8,
                         cursor: day ? 'pointer' : 'default',
                         transition: 'all 0.2s',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 6,
+                        overflow: 'hidden',
                       }}
                     >
                       {day && (

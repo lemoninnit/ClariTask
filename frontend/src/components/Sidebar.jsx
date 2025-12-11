@@ -12,7 +12,12 @@ export default function Sidebar() {
       background: '#3f5d2a', 
       display: 'flex', 
       flexDirection: 'column', 
-      minHeight: '100vh'
+      minHeight: '100vh',
+      height: '100vh',
+      position: 'sticky',
+      top: 0,
+      alignSelf: 'start',
+      overflowY: 'auto'
     },
     brandRow: { 
       display: 'flex', 
