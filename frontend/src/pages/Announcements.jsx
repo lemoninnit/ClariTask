@@ -45,50 +45,8 @@ export default function Announcements() {
         return true
       })
       
-      // Generate automatic notifications for overdue and due soon tasks
-      const autoNotifications = []
-      tasksData.forEach(task => {
-        if (task.status === 'completed') return
-        
-        if (task.dueDate) {
-          try {
-            const dueDate = new Date(task.dueDate)
-            if (isNaN(dueDate.getTime())) {
-              return // Skip if date is invalid
-            }
-            const hoursUntilDue = (dueDate - now) / (1000 * 60 * 60)
-            
-            if (dueDate < now) {
-              // Overdue task
-              autoNotifications.push({
-                announcementId: `overdue_${task.taskId}`,
-                title: 'Task Overdue ⚠️',
-                content: `Task "${task.title}" is overdue.`,
-                taskTitle: task.title,
-                taskCategoryName: task.categoryName,
-                createdAt: dueDate.toISOString(),
-                notificationType: 'task_overdue'
-              })
-            } else if (hoursUntilDue <= 24 && hoursUntilDue > 0) {
-              // Due soon (within 24 hours)
-              autoNotifications.push({
-                announcementId: `due_soon_${task.taskId}`,
-                title: 'Task Due Soon ⏰',
-                content: `Task "${task.title}" is due within 24 hours.`,
-                taskTitle: task.title,
-                taskCategoryName: task.categoryName,
-                createdAt: new Date().toISOString(),
-                notificationType: 'task_due_soon'
-              })
-            }
-          } catch {
-            // Skip if date parsing fails
-          }
-        }
-      })
-      
       // Combine and sort by most recent
-      const allNotifications = [...validAnnouncements, ...autoNotifications]
+      const allNotifications = [...validAnnouncements]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       
       setNotifications(allNotifications)

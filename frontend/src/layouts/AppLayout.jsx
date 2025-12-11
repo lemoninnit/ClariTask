@@ -21,13 +21,16 @@ export default function AppLayout({ children }) {
     shell: { 
       display: 'grid', 
       gridTemplateColumns: mobile ? '200px 1fr' : '260px 1fr', 
-      minHeight: '100vh', 
+      minHeight: '100vh',
+      height: '100vh',
       background: '#f5f7f8' 
     },
     content: { 
       display: 'flex', 
       flexDirection: 'column',
-      overflow: 'auto'
+      minHeight: '100vh',
+      height: '100vh',
+      overflow: 'hidden'
     },
     header: { 
       borderBottom: '1px solid #e5e7eb', 
@@ -94,7 +97,7 @@ export default function AppLayout({ children }) {
     main: { 
       flex: 1, 
       padding: mobile ? 16 : 24,
-      overflow: 'auto'
+      overflowY: 'auto'
     }
   }
   

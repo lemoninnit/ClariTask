@@ -12,6 +12,7 @@ import java.util.List;
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
     List<Announcement> findByUserUserIdOrderByCreatedAtDesc(Long userId);
     List<Announcement> findAllByOrderByCreatedAtDesc();
+    List<Announcement> findByTaskTaskIdAndNotificationType(Long taskId, String notificationType);
     
     @Query("SELECT a FROM Announcement a WHERE a.expiresAt IS NULL OR a.expiresAt > :now ORDER BY a.createdAt DESC")
     List<Announcement> findActiveNotifications(@Param("now") LocalDateTime now);

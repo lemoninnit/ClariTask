@@ -26,6 +26,7 @@ export default function Tasks() {
   const [creating, setCreating] = useState(false)
   const [newCat, setNewCat] = useState('')
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
   const { user } = useAuth()
   const navigate = useNavigate()
 
@@ -184,11 +185,21 @@ export default function Tasks() {
     }
   }
 
+  const filteredTasks = tasks.filter((t) => {
+    if (!searchTerm.trim()) return true
+    const q = searchTerm.toLowerCase()
+    return (
+      (t.title || '').toLowerCase().includes(q) ||
+      (t.description || '').toLowerCase().includes(q) ||
+      (t.categoryName || '').toLowerCase().includes(q)
+    )
+  })
+
   return (
     <AppLayout>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-          <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 200 }}>
             <h1 style={{ fontWeight: 800, fontSize: 28, color: '#0f172a', margin: '0 0 8px 0' }}>
               Tasks
             </h1>
@@ -196,11 +207,28 @@ export default function Tasks() {
               Manage your tasks and assignments
             </p>
           </div>
-          {!showForm && (
-            <Button onClick={() => setShowForm(true)}>
-              <Plus size={18} style={{ marginRight: '8px' }} /> Create Task
-            </Button>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search tasks by title, description, or category"
+              style={{
+                width: 260,
+                maxWidth: '100%',
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: '1px solid #e5e7eb',
+                background: '#fff',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+              }}
+            />
+            {!showForm && (
+              <Button onClick={() => setShowForm(true)}>
+                <Plus size={18} style={{ marginRight: '8px' }} /> Create Task
+              </Button>
+            )}
+          </div>
         </div>
 
         {showForm && (
@@ -334,19 +362,19 @@ export default function Tasks() {
 
         <Card>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: '0 0 16px 0' }}>
-            All Tasks ({tasks.length})
+            All Tasks ({filteredTasks.length})
           </h2>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
               Loading tasks...
             </div>
-          ) : tasks.length === 0 ? (
+          ) : filteredTasks.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-              <p>No tasks yet. Create your first task!</p>
+              {searchTerm.trim() ? <p>No tasks match “{searchTerm}”.</p> : <p>No tasks yet. Create your first task!</p>}
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {tasks.map(t => (
+              {filteredTasks.map(t => (
                 <TaskItem
                   key={t.taskId}
                   title={t.title}
