@@ -1,15 +1,16 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import Landing from './pages/Landing'
-import Dashboard from './pages/Dashboard'
-import Calendar from './pages/Calendar'
-import Tasks from './pages/Tasks'
-import Profile from './pages/Profile'
-import Announcements from './pages/Announcements'
-import CreateAnnouncement from './pages/CreateAnnouncement'
-import ProtectedRoute from './components/ProtectedRoute'
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Landing from './pages/Landing';
+import Dashboard from './pages/Dashboard';
+import Calendar from './pages/Calendar';
+import Tasks from './pages/Tasks';
+import Profile from './pages/Profile';
+import Announcements from './pages/Announcements';
+import CreateAnnouncement from './pages/CreateAnnouncement';
+import ProtectedRoute from './components/ProtectedRoute';
+import './App.css';
 
 export default function App() {
   return (
@@ -61,5 +62,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
+

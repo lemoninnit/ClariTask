@@ -5,7 +5,7 @@ import Button from '../components/Button'
 import Card from '../components/Card'
 import TextField from '../components/TextField'
 import TaskItem from '../components/TaskItem'
-import { getTasks, getTask, createTask, updateTask, deleteTask } from '../api/tasks'
+import { getTasks, getTask, createTask, updateTask, deleteTask, updateTaskStatus } from '../api/tasks'
 import { getCategories, createCategory } from '../api/categories'
 import { useAuth } from '../contexts/AuthContext'
 import { Plus, ArrowLeft } from 'lucide-react'
@@ -164,6 +164,11 @@ export default function Tasks() {
       console.error('Delete error:', error)
       alert('Failed to delete task. Please try again.')
     }
+  }
+
+  const handleStatusChange = async (taskId, nextStatus) => {
+    await updateTaskStatus(taskId, nextStatus)
+    setTasks(prev => prev.map(t => t.taskId === taskId ? { ...t, status: nextStatus } : t))
   }
 
   const onAddCategory = async (e) => {
@@ -352,6 +357,7 @@ export default function Tasks() {
                   taskId={t.taskId}
                   onDelete={() => handleDelete(t.taskId)}
                   onEdit={() => navigate(`/tasks/edit/${t.taskId}`)}
+                  onStatusChange={handleStatusChange}
                 />
               ))}
             </div>

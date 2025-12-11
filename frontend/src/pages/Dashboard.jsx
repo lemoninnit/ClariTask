@@ -5,7 +5,7 @@ import WelcomeCard from '../components/WelcomeCard'
 import StatsCardRow from '../components/StatsCardRow'
 import CategoriesCard from '../components/CategoriesCard'
 import TasksCard from '../components/TasksCard'
-import { getTasks } from '../api/tasks'
+import { getTasks, updateTaskStatus } from '../api/tasks'
 import { getCategories, createCategory } from '../api/categories'
 import { useAuth } from '../contexts/AuthContext'
 import { Plus } from 'lucide-react'
@@ -121,6 +121,11 @@ export default function Dashboard() {
 
   const userName = user?.userDto?.name || user?.name || 'User'
 
+  const handleStatusChange = async (taskId, nextStatus) => {
+    await updateTaskStatus(taskId, nextStatus)
+    setTasks(prev => prev.map(t => t.taskId === taskId ? { ...t, status: nextStatus } : t))
+  }
+
   if (loading) {
     return (
       <AppLayout>
@@ -193,7 +198,7 @@ export default function Dashboard() {
             onCategoryDeleted={handleCategoryDeleted}
           />
           
-          <TasksCard tasks={visibleTasks} loading={loading} />
+          <TasksCard tasks={visibleTasks} loading={loading} onStatusChange={handleStatusChange} />
         </div>
       </div>
     </AppLayout>

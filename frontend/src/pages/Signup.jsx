@@ -45,7 +45,7 @@ export default function Signup() {
     <AuthLayout
       title="Get Started Now"
       subtitle="Create your account to start managing tasks"
-      imageUrl="/public/wildcat.jpg"
+      imageUrl="/wildcat.jpg"
     >
       <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {error && (

@@ -67,3 +67,8 @@ export async function completeTask(id) {
   const response = await apiClient.patch(`/tasks/${id}/complete`)
   return response.data
 }
+
+export async function updateTaskStatus(id, status) {
+  const response = await apiClient.patch(`/tasks/${id}/status`, { status })
+  return response.data
+}

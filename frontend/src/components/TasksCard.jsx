@@ -54,7 +54,7 @@ import Card from './Card'
 import TaskItem from './TaskItem'
 import { Clipboard } from 'lucide-react'
 
-export default function TasksCard({ tasks = [], loading = false }) {
+export default function TasksCard({ tasks = [], loading = false, onStatusChange }) {
   return (
     <Card 
       title="My Tasks" 
@@ -91,6 +91,7 @@ export default function TasksCard({ tasks = [], loading = false }) {
               status={t.status}
               categoryName={t.categoryName}
               taskId={t.taskId}
+              onStatusChange={onStatusChange}
             />
           ))}
         </div>
