@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.Locale;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -44,7 +46,7 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskDto> create(@RequestBody TaskDto taskDto) {
-        Long userId = SecurityUtil.getCurrentUserId();
+        Long userId = Objects.requireNonNull(SecurityUtil.getCurrentUserId(), "User must be authenticated");
         User user = userRepository.findById(userId).orElseThrow();
         
         Task task = new Task();
@@ -54,8 +56,9 @@ public class TaskController {
         task.setStatus(taskDto.getStatus() != null ? taskDto.getStatus() : "pending");
         task.setUser(user);
         
-        if (taskDto.getCategoryId() != null && taskDto.getCategoryId() > 0) {
-            categoryRepository.findById(taskDto.getCategoryId())
+        Long categoryId = taskDto.getCategoryId();
+        if (categoryId != null && categoryId > 0) {
+            categoryRepository.findById(categoryId)
                     .ifPresent(task::setCategory);
         } else {
             task.setCategory(null);
@@ -77,7 +80,7 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> get(@PathVariable Long id) {
-        Long userId = SecurityUtil.getCurrentUserId();
+        Long userId = Objects.requireNonNull(SecurityUtil.getCurrentUserId(), "User must be authenticated");
         return service.get(id)
                 .filter(task -> task.getUser().getUserId().equals(userId))
                 .map(entity -> ResponseEntity.ok(DtoMapper.toDto(entity)))
@@ -86,18 +89,18 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskDto> update(@PathVariable Long id, @RequestBody TaskDto taskDto) {
-        Long userId = SecurityUtil.getCurrentUserId();
+        Long userId = Objects.requireNonNull(SecurityUtil.getCurrentUserId(), "User must be authenticated");
         return service.get(id)
                 .filter(task -> task.getUser().getUserId().equals(userId))
                 .map(existing -> {
-                    String oldStatus = existing.getStatus();
                     existing.setTitle(taskDto.getTitle());
                     existing.setDescription(taskDto.getDescription());
                     existing.setDueDate(taskDto.getDueDate());
                     existing.setStatus(taskDto.getStatus());
                     
-                    if (taskDto.getCategoryId() != null) {
-                        categoryRepository.findById(taskDto.getCategoryId())
+                    Long categoryId = taskDto.getCategoryId();
+                    if (categoryId != null) {
+                        categoryRepository.findById(categoryId)
                                 .ifPresent(existing::setCategory);
                     } else {
                         existing.setCategory(null);
@@ -121,7 +124,7 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        Long userId = SecurityUtil.getCurrentUserId();
+        Long userId = Objects.requireNonNull(SecurityUtil.getCurrentUserId(), "User must be authenticated");
         return service.get(id)
                 .filter(task -> task.getUser().getUserId().equals(userId))
                 .map(task -> {
@@ -155,7 +158,7 @@ public class TaskController {
 
     @PatchMapping("/{id}/complete")
     public ResponseEntity<TaskDto> complete(@PathVariable Long id) {
-        Long userId = SecurityUtil.getCurrentUserId();
+        Long userId = Objects.requireNonNull(SecurityUtil.getCurrentUserId(), "User must be authenticated");
         return service.get(id)
                 .filter(task -> task.getUser().getUserId().equals(userId))
                 .map(existing -> {
@@ -172,6 +175,56 @@ public class TaskController {
                     notification.setExpiresAt(LocalDateTime.now().plusDays(7));
                     announcementRepository.save(notification);
                     
+                    return ResponseEntity.ok(DtoMapper.toDto(saved));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        Long userId = Objects.requireNonNull(SecurityUtil.getCurrentUserId(), "User must be authenticated");
+        if (payload == null || !payload.containsKey("status")) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Status is required"));
+        }
+
+        String requested = payload.get("status");
+        if (requested == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Status is required"));
+        }
+
+        String normalized = requested.trim().toLowerCase(Locale.ROOT);
+        Set<String> allowed = Set.of("pending", "in_progress", "completed");
+        if (!allowed.contains(normalized)) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid status value"));
+        }
+
+        return service.get(id)
+                .filter(task -> task.getUser().getUserId().equals(userId))
+                .map(task -> {
+                    String current = task.getStatus() == null ? "pending" : task.getStatus();
+                    boolean validTransition =
+                            (current.equals("pending") && normalized.equals("in_progress")) ||
+                            (current.equals("in_progress") && normalized.equals("completed"));
+
+                    if (!validTransition) {
+                        return ResponseEntity.badRequest().body(
+                                Map.of("message", "Invalid status transition")
+                        );
+                    }
+
+                    task.setStatus(normalized);
+                    Task saved = service.update(task);
+
+                    // Notification for status change
+                    Announcement notification = new Announcement();
+                    notification.setTitle("Task Status Updated");
+                    notification.setContent("Task \"" + saved.getTitle() + "\" is now " + normalized.replace('_', ' '));
+                    notification.setUser(userRepository.findById(userId).orElseThrow());
+                    notification.setTask(saved);
+                    notification.setNotificationType("task_status_updated");
+                    notification.setExpiresAt(LocalDateTime.now().plusDays(7));
+                    announcementRepository.save(notification);
+
                     return ResponseEntity.ok(DtoMapper.toDto(saved));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

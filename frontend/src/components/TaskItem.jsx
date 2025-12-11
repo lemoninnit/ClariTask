@@ -1,21 +1,19 @@
 import React, { useState } from 'react'
 import styles from './TaskItem.module.css'
-import { completeTask } from '../api/tasks'
-import { Edit2, Trash2, CheckCircle2 } from 'lucide-react'
+import { Edit2, Trash2, CheckCircle2, Play, Flag } from 'lucide-react'
 
-export default function TaskItem({ title, dueDate, status, categoryName, taskId, description, onEdit, onDelete }) {
+export default function TaskItem({ title, dueDate, status, categoryName, taskId, description, onEdit, onDelete, onStatusChange }) {
   const css = styles || {}
   const [busy, setBusy] = useState(false)
 
-  const onComplete = async () => {
-    if (status === 'completed') return
+  const handleStatus = async (nextStatus) => {
+    if (!onStatusChange || !nextStatus) return
     setBusy(true)
-    try { 
-      await completeTask(taskId)
-      // Refresh page to show new notification
-      setTimeout(() => window.location.reload(), 500)
+    try {
+      await onStatusChange(taskId, nextStatus)
     } catch (error) {
-      alert('Failed to complete task')
+      alert('Failed to update status')
+    } finally {
       setBusy(false)
     }
   }
@@ -159,9 +157,44 @@ export default function TaskItem({ title, dueDate, status, categoryName, taskId,
               <Edit2 size={16} color="#6b7280" />
             </button>
           )}
-          {status !== 'completed' && (
+          {status === 'pending' && (
             <button 
-              onClick={onComplete} 
+              onClick={() => handleStatus('in_progress')} 
+              disabled={busy}
+              style={{ 
+                padding: '6px', 
+                border: '1px solid #2563eb', 
+                background: '#fff', 
+                borderRadius: 6,
+                cursor: busy ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: busy ? 0.5 : 1,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                if (!busy) {
+                  e.currentTarget.style.background = '#2563eb'
+                  e.currentTarget.style.color = '#fff'
+                  e.currentTarget.style.transform = 'scale(1.08)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!busy) {
+                  e.currentTarget.style.background = '#fff'
+                  e.currentTarget.style.color = '#0f172a'
+                  e.currentTarget.style.transform = 'scale(1)'
+                }
+              }}
+              title="Start Progress"
+            >
+              <Play size={16} color={busy ? '#6b7280' : '#2563eb'} />
+            </button>
+          )}
+          {status === 'in_progress' && (
+            <button 
+              onClick={() => handleStatus('completed')} 
               disabled={busy}
               style={{ 
                 padding: '6px', 
@@ -187,9 +220,9 @@ export default function TaskItem({ title, dueDate, status, categoryName, taskId,
                   e.currentTarget.style.transform = 'scale(1)'
                 }
               }}
-              title="Complete"
+              title="Mark Completed"
             >
-              <CheckCircle2 size={16} color={busy ? '#6b7280' : '#10b981'} />
+              <Flag size={16} color={busy ? '#6b7280' : '#10b981'} />
             </button>
           )}
           {onDelete && (

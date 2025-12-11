@@ -37,7 +37,7 @@ export default function Login() {
     <AuthLayout
       title="Welcome back!"
       subtitle="Enter your credentials to access your account"
-      imageUrl="/public/wildcat.jpg"
+      imageUrl="/wildcat.jpg"
     >
       <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {error && (
@@ -91,11 +91,6 @@ export default function Login() {
               </button>
             }
           />
-          <div style={{ textAlign: 'right', marginTop: '8px' }}>
-            <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none' }}>
-              Forgot password?
-            </a>
-          </div>
         </div>
         
         <Button type="submit" disabled={loading} style={{ width: '100%', padding: '12px', fontSize: '16px' }}>

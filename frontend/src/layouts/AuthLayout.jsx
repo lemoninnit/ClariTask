@@ -13,13 +13,12 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
   }, [])
   
   const fallback = 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1400&q=80'
+  const img = imageUrl || '/wildcat.jpg' || fallback
   const s = {
     wrapper: { 
       display: 'grid', 
       gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', 
       minHeight: '100vh',
-      maxHeight: '100vh',
-      overflow: 'visible',
       background: '#fff' 
     },
     left: { 
@@ -75,7 +74,27 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
       backgroundSize: 'cover', 
       backgroundPosition: 'center', 
       backgroundRepeat: 'no-repeat',
-      display: mobile ? 'none' : 'block'
+      minHeight: mobile ? '45vh' : '100vh',
+      display: 'block'
+    },
+    rightOverlay: {
+      position: 'absolute',
+      inset: 0,
+      background: 'linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.28) 100%)'
+    },
+    rightImg: {
+      position: 'absolute',
+      inset: 0,
+      backgroundImage: `url(${img})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    },
+    rightWrapper: {
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden'
     },
   }
   
@@ -106,7 +125,12 @@ export default function AuthLayout({ title, subtitle, imageUrl, children, footer
           </div>
         </div>
       </div>
-      {!mobile && <div style={{ ...s.right, backgroundImage: `url(${imageUrl || fallback})` }} />}
+      <div style={s.right}>
+        <div style={s.rightWrapper}>
+          <div style={s.rightImg} />
+          <div style={s.rightOverlay} />
+        </div>
+      </div>
     </div>
   )
 }
